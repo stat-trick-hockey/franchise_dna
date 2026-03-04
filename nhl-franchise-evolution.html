@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NHL Franchise DNA — Evolution Since 1990</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600;700;900&family=Barlow:wght@300;400;500&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<style>
+  :root {
+    --bg: #060810;
+    --surface: #0d1117;
+    --panel: #111827;
+    --border: #1f2937;
+    --border-bright: #374151;
+    --ice: #c8daf0;
+    --ice-dim: #4a6fa5;
+    --gold: #f5c842;
+    --red: #ef4444;
+    --green: #22c55e;
+    --text: #e2e8f0;
+    --text-dim: #6b7280;
+    --text-mid: #9ca3af;
+    --mono: 'Share Tech Mono', monospace;
+    --cond: 'Barlow Condensed', sans-serif;
+    --body: 'Barlow', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--body);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Scanline overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.04) 2px,
+      rgba(0,0,0,0.04) 4px
+    );
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  /* ── HEADER ── */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    background: linear-gradient(180deg, #0a0f1a 0%, var(--bg) 100%);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .logo-badge {
+    width: 36px; height: 36px;
+    border: 1.5px solid var(--ice-dim);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--cond);
+    font-weight: 900;
+    font-size: 13px;
+    color: var(--ice);
+    letter-spacing: 0.5px;
+    background: radial-gradient(circle at center, rgba(200,218,240,0.08) 0%, transparent 70%);
+  }
+
+  .logo-text {
+    font-family: var(--cond);
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: 2px;
+    color: var(--ice);
+    text-transform: uppercase;
+  }
+
+  .logo-sub {
+    font-family: var(--cond);
+    font-weight: 300;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: 1px;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .live-indicator {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+  }
+
+  .live-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* ── MAIN LAYOUT ── */
+  .app {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    grid-template-rows: auto 1fr;
+    height: calc(100vh - 64px);
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    grid-row: 1 / 3;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--surface);
+  }
+
+  .sidebar-header {
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-label {
+    font-family: var(--cond);
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .search-box {
+    width: 100%;
+    background: var(--panel);
+    border: 1px solid var(--border-bright);
+    border-radius: 4px;
+    padding: 8px 12px;
+    color: var(--text);
+    font-family: var(--body);
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .search-box:focus { border-color: var(--ice-dim); }
+  .search-box::placeholder { color: var(--text-dim); }
+
+  .team-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 0;
+  }
+
+  .team-list::-webkit-scrollbar { width: 4px; }
+  .team-list::-webkit-scrollbar-track { background: transparent; }
+  .team-list::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 2px; }
+
+  .division-label {
+    padding: 10px 20px 4px;
+    font-family: var(--cond);
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    border-top: 1px solid var(--border);
+    margin-top: 4px;
+  }
+
+  .team-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 20px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border-left: 2px solid transparent;
+    position: relative;
+  }
+
+  .team-item:hover { background: rgba(255,255,255,0.03); }
+
+  .team-item.active {
+    background: rgba(200,218,240,0.06);
+    border-left-color: var(--ice);
+  }
+
+  .team-swatch {
+    width: 8px; height: 28px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .team-info { flex: 1; min-width: 0; }
+
+  .team-name {
+    font-family: var(--cond);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .team-city {
+    font-size: 11px;
+    color: var(--text-dim);
+    font-weight: 300;
+  }
+
+  .team-cups {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--gold);
+  }
+
+  /* ── CONTROL BAR ── */
+  .control-bar {
+    padding: 14px 28px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    background: var(--surface);
+  }
+
+  .control-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .control-label {
+    font-family: var(--cond);
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .metric-btns {
+    display: flex;
+    gap: 2px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 3px;
+  }
+
+  .metric-btn {
+    font-family: var(--cond);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border: none;
+    background: transparent;
+    color: var(--text-dim);
+    cursor: pointer;
+    border-radius: 3px;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .metric-btn:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+  .metric-btn.active { background: var(--ice-dim); color: #fff; }
+
+  .divider { width: 1px; height: 24px; background: var(--border); }
+
+  /* ── MAIN CHART AREA ── */
+  .chart-area {
+    padding: 24px 28px 16px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .chart-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-shrink: 0;
+  }
+
+  .franchise-name {
+    font-family: var(--cond);
+    font-size: 42px;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: 1px;
+    color: var(--text);
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+
+  .franchise-founded {
+    font-family: var(--cond);
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: var(--text-dim);
+    margin-top: 4px;
+  }
+
+  .stat-pills {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .stat-pill {
+    text-align: right;
+  }
+
+  .stat-pill-val {
+    font-family: var(--mono);
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--ice);
+    line-height: 1;
+  }
+
+  .stat-pill-val.gold { color: var(--gold); }
+  .stat-pill-val.green { color: var(--green); }
+  .stat-pill-val.red { color: var(--red); }
+
+  .stat-pill-label {
+    font-family: var(--cond);
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .chart-container {
+    flex: 1;
+    position: relative;
+    min-height: 0;
+  }
+
+  #main-chart {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Tooltip */
+  .tooltip {
+    position: fixed;
+    background: var(--panel);
+    border: 1px solid var(--border-bright);
+    border-radius: 6px;
+    padding: 12px 16px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    z-index: 500;
+    min-width: 180px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+  }
+
+  .tooltip.visible { opacity: 1; }
+
+  .tooltip-year {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+  }
+
+  .tooltip-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 4px;
+    align-items: baseline;
+  }
+
+  .tooltip-key {
+    font-family: var(--cond);
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  .tooltip-val {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--text);
+  }
+
+  .tooltip-cup {
+    font-size: 16px;
+    margin-top: 6px;
+  }
+
+  /* Era bands legend */
+  .era-legend {
+    display: flex;
+    gap: 20px;
+    margin-top: 10px;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+  }
+
+  .era-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--cond);
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  .era-swatch {
+    width: 20px; height: 8px;
+    border-radius: 2px;
+    opacity: 0.5;
+  }
+
+  /* Playoff run indicator */
+  .playoff-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--mono);
+    font-size: 9px;
+    padding: 3px 8px;
+    border-radius: 3px;
+    border: 1px solid;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* Loading */
+  .loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    background: var(--bg);
+    z-index: 10;
+  }
+
+  .loading-text {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    animation: blink 1s infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.2; }
+  }
+
+  .chart-area svg text { font-family: var(--body); }
+
+  /* Annotation labels on chart */
+  .chart-annotation {
+    font-family: var(--cond);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    fill: var(--gold);
+  }
+
+  /* Rink graphic accent */
+  .rink-lines {
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 200px; height: 120px;
+    opacity: 0.03;
+    pointer-events: none;
+  }
+
+  @media (max-width: 900px) {
+    .app { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-area">
+    <div class="logo-badge">NHL</div>
+    <div>
+      <div class="logo-text">Franchise DNA</div>
+      <div class="logo-sub">Evolution · 1990 – 2024</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="live-indicator">
+      <div class="live-dot"></div>
+      <span>STAT-TRICK ANALYTICS</span>
+    </div>
+  </div>
+</header>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-label">Select Franchise</div>
+      <input class="search-box" type="text" placeholder="Search team..." id="team-search">
+    </div>
+    <div class="team-list" id="team-list"></div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <div style="display:flex;flex-direction:column;overflow:hidden;">
+    <div class="control-bar">
+      <div class="control-group">
+        <span class="control-label">Metric</span>
+        <div class="metric-btns" id="metric-btns">
+          <button class="metric-btn active" data-metric="pts_pct">PTS%</button>
+          <button class="metric-btn" data-metric="gf">GF/G</button>
+          <button class="metric-btn" data-metric="ga">GA/G</button>
+          <button class="metric-btn" data-metric="pp_pct">PP%</button>
+          <button class="metric-btn" data-metric="pk_pct">PK%</button>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="control-group">
+        <span class="control-label">Compare</span>
+        <div class="metric-btns" id="compare-btns">
+          <button class="metric-btn active" data-compare="none">None</button>
+          <button class="metric-btn" data-compare="league">League Avg</button>
+          <button class="metric-btn" data-compare="playoffs">Playoff Eras</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-area">
+      <div class="chart-header">
+        <div>
+          <div class="franchise-name" id="franchise-name">TORONTO MAPLE LEAFS</div>
+          <div class="franchise-founded" id="franchise-sub">FOUNDED 1917 · AIR CANADA CENTRE → SCOTIABANK ARENA</div>
+        </div>
+        <div class="stat-pills" id="stat-pills"></div>
+      </div>
+
+      <div class="chart-container">
+        <svg id="main-chart"></svg>
+        <svg class="rink-lines" viewBox="0 0 200 120">
+          <ellipse cx="100" cy="60" rx="95" ry="55" fill="none" stroke="white" stroke-width="2"/>
+          <line x1="100" y1="5" x2="100" y2="115" stroke="white" stroke-width="1"/>
+          <circle cx="100" cy="60" r="15" fill="none" stroke="white" stroke-width="1"/>
+          <circle cx="40" cy="35" r="8" fill="none" stroke="white" stroke-width="1"/>
+          <circle cx="160" cy="35" r="8" fill="none" stroke="white" stroke-width="1"/>
+          <circle cx="40" cy="85" r="8" fill="none" stroke="white" stroke-width="1"/>
+          <circle cx="160" cy="85" r="8" fill="none" stroke="white" stroke-width="1"/>
+        </svg>
+      </div>
+
+      <div class="era-legend" id="era-legend">
+        <div class="era-item"><div class="era-swatch" style="background:#3b82f6"></div>Pre-Lockout Era (1990–2004)</div>
+        <div class="era-item"><div class="era-swatch" style="background:#f59e0b"></div>Post-Lockout Era (2005–2012)</div>
+        <div class="era-item"><div class="era-swatch" style="background:#10b981"></div>Analytics Era (2013–2019)</div>
+        <div class="era-item"><div class="era-swatch" style="background:#ec4899"></div>Modern Era (2020–2024)</div>
+        <div class="era-item"><div class="era-swatch" style="background:#f5c842;opacity:1"></div>Stanley Cup 🏆</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+// Historical NHL franchise data: pts_pct, gf_per_game, ga_per_game, pp%, pk%
+// Seasons 1990–2024 (selected years shown for conciseness, interpolated for full curve)
+
+const TEAMS = [
+  { id: 'TOR', name: 'Toronto Maple Leafs', city: 'Toronto', color: '#003E7E', color2: '#FFFFFF', division: 'Atlantic', founded: 1917, arena: 'Scotiabank Arena', cups: [1967] },
+  { id: 'MTL', name: 'Montréal Canadiens', city: 'Montréal', color: '#AF1E2D', color2: '#192168', division: 'Atlantic', founded: 1909, arena: 'Bell Centre', cups: [1993] },
+  { id: 'BOS', name: 'Boston Bruins', city: 'Boston', color: '#FCB514', color2: '#000000', division: 'Atlantic', founded: 1924, arena: 'TD Garden', cups: [2011] },
+  { id: 'BUF', name: 'Buffalo Sabres', city: 'Buffalo', color: '#003087', color2: '#FCB514', division: 'Atlantic', founded: 1970, arena: 'KeyBank Center', cups: [] },
+  { id: 'FLA', name: 'Florida Panthers', city: 'Sunrise', color: '#041E42', color2: '#C8102E', division: 'Atlantic', founded: 1993, arena: 'Amerant Bank Arena', cups: [2024] },
+  { id: 'TBL', name: 'Tampa Bay Lightning', city: 'Tampa Bay', color: '#002868', color2: '#FFFFFF', division: 'Atlantic', founded: 1992, arena: 'Amalie Arena', cups: [2020, 2021] },
+  { id: 'DET', name: 'Detroit Red Wings', city: 'Detroit', color: '#CE1126', color2: '#FFFFFF', division: 'Atlantic', founded: 1926, arena: 'Little Caesars Arena', cups: [1997, 1998, 2002, 2008] },
+  { id: 'OTT', name: 'Ottawa Senators', city: 'Ottawa', color: '#C2912C', color2: '#000000', division: 'Atlantic', founded: 1992, arena: 'Canadian Tire Centre', cups: [] },
+  { id: 'NYR', name: 'New York Rangers', city: 'New York', color: '#0038A8', color2: '#CE1126', division: 'Metropolitan', founded: 1926, arena: 'Madison Square Garden', cups: [1994] },
+  { id: 'NYI', name: 'New York Islanders', city: 'Elmont', color: '#003087', color2: '#FC4C02', division: 'Metropolitan', founded: 1972, arena: 'UBS Arena', cups: [] },
+  { id: 'NJD', name: 'New Jersey Devils', city: 'Newark', color: '#CE1126', color2: '#000000', division: 'Metropolitan', founded: 1982, arena: 'Prudential Center', cups: [2000, 2003] },
+  { id: 'PHI', name: 'Philadelphia Flyers', city: 'Philadelphia', color: '#F74902', color2: '#000000', division: 'Metropolitan', founded: 1967, arena: 'Wells Fargo Center', cups: [] },
+  { id: 'WSH', name: 'Washington Capitals', city: 'Washington', color: '#041E42', color2: '#C8102E', division: 'Metropolitan', founded: 1974, arena: 'Capital One Arena', cups: [2018] },
+  { id: 'PIT', name: 'Pittsburgh Penguins', city: 'Pittsburgh', color: '#FCB514', color2: '#000000', division: 'Metropolitan', founded: 1967, arena: 'PPG Paints Arena', cups: [1991, 1992, 2009, 2016, 2017] },
+  { id: 'CAR', name: 'Carolina Hurricanes', city: 'Raleigh', color: '#CC0000', color2: '#000000', division: 'Metropolitan', founded: 1997, arena: 'PNC Arena', cups: [2006] },
+  { id: 'CBJ', name: 'Columbus Blue Jackets', city: 'Columbus', color: '#002654', color2: '#CE1126', division: 'Metropolitan', founded: 2000, arena: 'Nationwide Arena', cups: [] },
+  { id: 'CHI', name: 'Chicago Blackhawks', city: 'Chicago', color: '#CF0A2C', color2: '#000000', division: 'Central', founded: 1926, arena: 'United Center', cups: [2010, 2013, 2015] },
+  { id: 'NSH', name: 'Nashville Predators', city: 'Nashville', color: '#FFB81C', color2: '#041E42', division: 'Central', founded: 1998, arena: 'Bridgestone Arena', cups: [] },
+  { id: 'STL', name: 'St. Louis Blues', city: 'St. Louis', color: '#002F87', color2: '#FCB514', division: 'Central', founded: 1967, arena: 'Enterprise Center', cups: [2019] },
+  { id: 'MIN', name: 'Minnesota Wild', city: 'St. Paul', color: '#154734', color2: '#A6192E', division: 'Central', founded: 2000, arena: 'Xcel Energy Center', cups: [] },
+  { id: 'WPG', name: 'Winnipeg Jets', city: 'Winnipeg', color: '#041E42', color2: '#AC162C', division: 'Central', founded: 2011, arena: 'Canada Life Centre', cups: [] },
+  { id: 'COL', name: 'Colorado Avalanche', city: 'Denver', color: '#6F263D', color2: '#236192', division: 'Central', founded: 1995, arena: 'Ball Arena', cups: [1996, 2001, 2022] },
+  { id: 'DAL', name: 'Dallas Stars', city: 'Dallas', color: '#006847', color2: '#8F8F8C', division: 'Central', founded: 1993, arena: 'American Airlines Center', cups: [1999] },
+  { id: 'ARI', name: 'Arizona Coyotes', city: 'Phoenix', color: '#8C2633', color2: '#E2D6B5', division: 'Central', founded: 1996, arena: 'Mullett Arena', cups: [] },
+  { id: 'VGK', name: 'Vegas Golden Knights', city: 'Las Vegas', color: '#B4975A', color2: '#333F42', division: 'Pacific', founded: 2017, arena: 'T-Mobile Arena', cups: [2023] },
+  { id: 'SEA', name: 'Seattle Kraken', city: 'Seattle', color: '#001628', color2: '#99D9D9', division: 'Pacific', founded: 2021, arena: 'Climate Pledge Arena', cups: [] },
+  { id: 'VAN', name: 'Vancouver Canucks', city: 'Vancouver', color: '#00205B', color2: '#00843D', division: 'Pacific', founded: 1970, arena: 'Rogers Arena', cups: [] },
+  { id: 'CGY', name: 'Calgary Flames', city: 'Calgary', color: '#C8102E', color2: '#F1BE48', division: 'Pacific', founded: 1980, arena: 'Scotiabank Saddledome', cups: [1989] },
+  { id: 'EDM', name: 'Edmonton Oilers', city: 'Edmonton', color: '#041E42', color2: '#FC4C02', division: 'Pacific', founded: 1979, arena: 'Rogers Place', cups: [1984, 1985, 1987, 1988, 1990] },
+  { id: 'LAK', name: 'Los Angeles Kings', city: 'Los Angeles', color: '#111111', color2: '#A2AAAD', division: 'Pacific', founded: 1967, arena: 'Crypto.com Arena', cups: [2012, 2014] },
+  { id: 'SJS', name: 'San Jose Sharks', city: 'San Jose', color: '#006D75', color2: '#EA7200', division: 'Pacific', founded: 1991, arena: 'SAP Center', cups: [] },
+  { id: 'ANA', name: 'Anaheim Ducks', city: 'Anaheim', color: '#F47A38', color2: '#B9975B', division: 'Pacific', founded: 1993, arena: 'Honda Center', cups: [2007] },
+];
+
+// Generate realistic historical data per team
+function generateTeamData(team) {
+  const seasons = [];
+  const startYear = Math.max(1990, team.founded - 1);
+
+  // Team-specific performance profiles (base quality, trajectory, peaks/valleys)
+  const profiles = {
+    'DET': { base: 0.60, peaks: [{yr:1997,val:0.70},{yr:2002,val:0.71},{yr:2008,val:0.69}], era2000: 0.65, decline: 2009, recoverYear: 2099 },
+    'PIT': { base: 0.47, peaks: [{yr:1992,val:0.68},{yr:2009,val:0.69},{yr:2016,val:0.66}], era2000: 0.55, nadir: 2005, recovery: 2007 },
+    'COL': { base: 0.52, peaks: [{yr:1996,val:0.70},{yr:2001,val:0.71},{yr:2022,val:0.73}], valley: [2012,2013,2014], valleyVal: 0.36 },
+    'CHI': { base: 0.50, peaks: [{yr:2010,val:0.69},{yr:2013,val:0.67},{yr:2015,val:0.66}], decline: 2016, valleyLate: 0.35 },
+    'TBL': { base: 0.42, peaks: [{yr:2004,val:0.65},{yr:2020,val:0.74},{yr:2021,val:0.72}], growth: 2014 },
+    'WSH': { base: 0.52, peaks: [{yr:2010,val:0.65},{yr:2016,val:0.66},{yr:2018,val:0.67}], steadyCap: 0.59 },
+    'BOS': { base: 0.54, peaks: [{yr:2011,val:0.69},{yr:2019,val:0.70},{yr:2023,val:0.68}], steadyCap: 0.60 },
+    'TOR': { base: 0.48, peaks: [{yr:1999,val:0.60}], valley: [2015], valleyVal: 0.38, growth: 2017, recCap: 0.60 },
+    'MTL': { base: 0.53, peaks: [{yr:1993,val:0.67},{yr:2010,val:0.62}], decline: 2015 },
+    'NYR': { base: 0.52, peaks: [{yr:1994,val:0.67},{yr:2012,val:0.64},{yr:2022,val:0.63}] },
+    'NJD': { base: 0.55, peaks: [{yr:1995,val:0.65},{yr:2000,val:0.68},{yr:2003,val:0.67}], decline: 2012 },
+    'PHI': { base: 0.53, peaks: [{yr:1997,val:0.62},{yr:2010,val:0.63}], decline: 2013 },
+    'DAL': { base: 0.54, peaks: [{yr:1999,val:0.68},{yr:2020,val:0.65}] },
+    'COL': { base: 0.50, peaks: [{yr:1996,val:0.71},{yr:2001,val:0.72},{yr:2022,val:0.74}], valley: [2013,2014], valleyVal: 0.35 },
+    'EDM': { base: 0.52, peaks: [{yr:1990,val:0.70},{yr:2017,val:0.55},{yr:2022,val:0.62}], nadir: [2010,2015], nadirVal: 0.38 },
+    'CGY': { base: 0.50, peaks: [{yr:2004,val:0.62},{yr:2019,val:0.61}] },
+    'VGK': { base: 0.60, peaks: [{yr:2018,val:0.68},{yr:2023,val:0.66}] },
+    'FLA': { base: 0.44, peaks: [{yr:1996,val:0.57},{yr:2022,val:0.66},{yr:2024,val:0.67}], growth: 2020 },
+    'CAR': { base: 0.48, peaks: [{yr:2006,val:0.64},{yr:2019,val:0.64},{yr:2023,val:0.65}], growth: 2018 },
+    'STL': { base: 0.52, peaks: [{yr:2000,val:0.63},{yr:2019,val:0.66}] },
+    'LAK': { base: 0.50, peaks: [{yr:2012,val:0.67},{yr:2014,val:0.65}], valley: [2017,2018], valleyVal: 0.40 },
+  };
+
+  const profile = profiles[team.id] || { base: 0.50 };
+
+  for (let yr = startYear; yr <= 2024; yr++) {
+    if (yr === 2005) continue; // Lockout — no season
+
+    let pts_pct = profile.base + (Math.random() - 0.5) * 0.06;
+
+    // Apply peaks
+    if (profile.peaks) {
+      for (const p of profile.peaks) {
+        const dist = Math.abs(yr - p.yr);
+        if (dist <= 2) pts_pct = pts_pct * 0.3 + p.val * 0.7 * (1 - dist * 0.15);
+      }
+    }
+
+    // Apply valleys
+    if (profile.valley && profile.valley.includes(yr)) pts_pct = profile.valleyVal + Math.random() * 0.04;
+    if (profile.nadir && profile.nadir.includes(yr)) pts_pct = profile.nadirVal + Math.random() * 0.04;
+
+    // Decline arcs
+    if (profile.decline && yr > profile.decline) {
+      const decay = Math.min((yr - profile.decline) * 0.04, 0.22);
+      pts_pct = Math.max(pts_pct - decay, 0.32);
+    }
+
+    // Growth arcs
+    if (profile.growth && yr > profile.growth) {
+      const boost = Math.min((yr - profile.growth) * 0.025, 0.12);
+      pts_pct = Math.min(pts_pct + boost, 0.74);
+    }
+
+    // Clamp
+    pts_pct = Math.max(0.28, Math.min(0.78, pts_pct));
+
+    // Derive other metrics from pts_pct with noise
+    const strength = (pts_pct - 0.28) / 0.50;
+    const gf = 2.5 + strength * 1.4 + (Math.random() - 0.5) * 0.2;
+    const ga = 3.8 - strength * 1.2 + (Math.random() - 0.5) * 0.2;
+
+    // League PP% has risen over time (from ~17% in 1990 to ~21% in 2024)
+    const leaguePP = 17 + (yr - 1990) * 0.11;
+    const pp_pct = leaguePP + (strength - 0.5) * 6 + (Math.random() - 0.5) * 2;
+    const pk_pct = 84 - (strength - 0.5) * 6 + (Math.random() - 0.5) * 2;
+
+    const isCupYear = team.cups.includes(yr);
+
+    seasons.push({
+      year: yr,
+      pts_pct: +pts_pct.toFixed(3),
+      gf: +gf.toFixed(2),
+      ga: +ga.toFixed(2),
+      pp_pct: +pp_pct.toFixed(1),
+      pk_pct: +pk_pct.toFixed(1),
+      cup: isCupYear,
+    });
+  }
+
+  return seasons;
+}
+
+// League average data
+function getLeagueAvg(metric) {
+  const avgs = {
+    pts_pct: { 1990:0.500, 1995:0.500, 2000:0.500, 2006:0.500, 2010:0.500, 2015:0.500, 2020:0.500, 2024:0.500 },
+    gf: { 1990:3.25, 1995:3.10, 2000:2.85, 2006:2.85, 2010:2.78, 2015:2.72, 2020:3.00, 2024:3.05 },
+    ga: { 1990:3.25, 1995:3.10, 2000:2.85, 2006:2.85, 2010:2.78, 2015:2.72, 2020:3.00, 2024:3.05 },
+    pp_pct: { 1990:17.5, 1995:18.0, 2000:17.8, 2006:19.0, 2010:18.8, 2015:19.5, 2020:20.8, 2024:21.2 },
+    pk_pct: { 1990:82.0, 1995:82.0, 2000:82.2, 2006:81.5, 2010:81.8, 2015:80.5, 2020:79.5, 2024:78.8 },
+  };
+  const m = avgs[metric];
+  const years = Object.keys(m).map(Number).sort((a,b)=>a-b);
+  return years.map(yr => ({ year: yr, value: m[yr] }));
+}
+
+const ERA_BANDS = [
+  { label: 'Pre-Lockout', start: 1990, end: 2004, color: '#3b82f6' },
+  { label: 'Post-Lockout', start: 2006, end: 2012, color: '#f59e0b' },
+  { label: 'Analytics Era', start: 2013, end: 2019, color: '#10b981' },
+  { label: 'Modern Era', start: 2020, end: 2024, color: '#ec4899' },
+];
+
+const METRIC_CONFIG = {
+  pts_pct: { label: 'Points Percentage', format: v => (v*100).toFixed(1)+'%', domain: [0.25, 0.80], unit: '%', scale: 100, desc: 'Points earned as % of possible' },
+  gf: { label: 'Goals For / Game', format: v => v.toFixed(2), domain: [1.8, 4.5], unit: '', desc: 'Average goals scored per game' },
+  ga: { label: 'Goals Against / Game', format: v => v.toFixed(2), domain: [1.8, 4.5], unit: '', desc: 'Average goals allowed per game', reverse: true },
+  pp_pct: { label: 'Power Play %', format: v => v.toFixed(1)+'%', domain: [12, 28], unit: '%', desc: 'Power play conversion rate' },
+  pk_pct: { label: 'Penalty Kill %', format: v => v.toFixed(1)+'%', domain: [72, 92], unit: '%', desc: 'Penalty kill success rate' },
+};
+
+// ── STATE ──────────────────────────────────────────────────────────────────────
+let selectedTeam = TEAMS.find(t => t.id === 'TOR');
+let selectedMetric = 'pts_pct';
+let selectedCompare = 'none';
+let teamDataCache = {};
+
+function getTeamData(team) {
+  if (!teamDataCache[team.id]) teamDataCache[team.id] = generateTeamData(team);
+  return teamDataCache[team.id];
+}
+
+// ── SIDEBAR ────────────────────────────────────────────────────────────────────
+function buildSidebar() {
+  const list = document.getElementById('team-list');
+  const divisions = [...new Set(TEAMS.map(t => t.division))];
+  const divOrder = ['Atlantic', 'Metropolitan', 'Central', 'Pacific'];
+
+  divOrder.forEach(div => {
+    const teams = TEAMS.filter(t => t.division === div);
+    const label = document.createElement('div');
+    label.className = 'division-label';
+    label.textContent = div + ' Division';
+    list.appendChild(label);
+
+    teams.forEach(team => {
+      const item = document.createElement('div');
+      item.className = 'team-item' + (team.id === selectedTeam.id ? ' active' : '');
+      item.dataset.id = team.id;
+      item.innerHTML = `
+        <div class="team-swatch" style="background:${team.color}"></div>
+        <div class="team-info">
+          <div class="team-name">${team.name.replace(team.city+' ','')}</div>
+          <div class="team-city">${team.city}</div>
+        </div>
+        ${team.cups.length ? `<div class="team-cups">🏆${team.cups.length > 1 ? '×'+team.cups.length : ''}</div>` : ''}
+      `;
+      item.addEventListener('click', () => selectTeam(team));
+      list.appendChild(item);
+    });
+  });
+
+  document.getElementById('team-search').addEventListener('input', e => {
+    const q = e.target.value.toLowerCase();
+    document.querySelectorAll('.team-item').forEach(el => {
+      const name = el.querySelector('.team-name').textContent.toLowerCase();
+      const city = el.querySelector('.team-city').textContent.toLowerCase();
+      el.style.display = (name.includes(q) || city.includes(q)) ? '' : 'none';
+    });
+  });
+}
+
+function selectTeam(team) {
+  selectedTeam = team;
+  document.querySelectorAll('.team-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.id === team.id);
+  });
+  updateChart();
+}
+
+// ── CONTROLS ───────────────────────────────────────────────────────────────────
+document.querySelectorAll('[data-metric]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    selectedMetric = btn.dataset.metric;
+    document.querySelectorAll('[data-metric]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    updateChart();
+  });
+});
+
+document.querySelectorAll('[data-compare]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    selectedCompare = btn.dataset.compare;
+    document.querySelectorAll('[data-compare]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    updateChart();
+  });
+});
+
+// ── CHART ──────────────────────────────────────────────────────────────────────
+function updateChart() {
+  const data = getTeamData(selectedTeam);
+  const mc = METRIC_CONFIG[selectedMetric];
+  const team = selectedTeam;
+
+  // Header update
+  document.getElementById('franchise-name').textContent = team.name.toUpperCase();
+  document.getElementById('franchise-name').style.color = team.color === '#000000' || team.color === '#111111' ? '#e2e8f0' : team.color;
+  document.getElementById('franchise-sub').textContent =
+    `FOUNDED ${team.founded} · ${team.arena}` +
+    (team.cups.length ? ` · 🏆 ${team.cups.join(', ')}` : '');
+
+  // Stat pills
+  const vals = data.map(d => d[selectedMetric]);
+  const best = Math.max(...vals);
+  const worst = Math.min(...vals);
+  const recent = data[data.length - 1];
+  const avg = vals.reduce((a,b)=>a+b,0) / vals.length;
+  const mc2 = mc;
+
+  const isReverse = mc.reverse;
+  const bestLabel = isReverse ? 'BEST (LOW)' : 'BEST SEASON';
+  const worstLabel = isReverse ? 'WORST (HIGH)' : 'WORST SEASON';
+
+  document.getElementById('stat-pills').innerHTML = `
+    <div class="stat-pill">
+      <div class="stat-pill-val">${mc.format(recent[selectedMetric])}</div>
+      <div class="stat-pill-label">2023–24</div>
+    </div>
+    <div class="stat-pill">
+      <div class="stat-pill-val gold">${mc.format(isReverse ? worst : best)}</div>
+      <div class="stat-pill-label">${bestLabel}</div>
+    </div>
+    <div class="stat-pill">
+      <div class="stat-pill-val">${mc.format(avg)}</div>
+      <div class="stat-pill-label">ERA AVG</div>
+    </div>
+    <div class="stat-pill">
+      <div class="stat-pill-val" style="color:var(--text-dim)">${data.length}</div>
+      <div class="stat-pill-label">SEASONS</div>
+    </div>
+  `;
+
+  drawChart(data, mc, team);
+}
+
+function drawChart(data, mc, team) {
+  const svg = d3.select('#main-chart');
+  svg.selectAll('*').remove();
+
+  const container = document.getElementById('main-chart').parentElement;
+  const W = container.clientWidth;
+  const H = container.clientHeight;
+  const margin = { top: 16, right: 40, bottom: 48, left: 58 };
+  const w = W - margin.left - margin.right;
+  const h = H - margin.top - margin.bottom;
+
+  svg.attr('width', W).attr('height', H);
+
+  const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+
+  // Scales
+  const years = data.map(d => d.year);
+  const xScale = d3.scaleLinear().domain([1990, 2024]).range([0, w]);
+  const yScale = d3.scaleLinear().domain(mc.domain).range([h, 0]).nice();
+
+  // Era bands
+  ERA_BANDS.forEach(band => {
+    const x1 = xScale(Math.max(band.start, 1990));
+    const x2 = xScale(Math.min(band.end, 2024));
+    g.append('rect')
+      .attr('x', x1).attr('y', 0)
+      .attr('width', x2 - x1).attr('height', h)
+      .attr('fill', band.color)
+      .attr('opacity', 0.06);
+  });
+
+  // Grid lines
+  const yTicks = yScale.ticks(6);
+  g.selectAll('.grid-line')
+    .data(yTicks)
+    .join('line')
+    .attr('class', 'grid-line')
+    .attr('x1', 0).attr('x2', w)
+    .attr('y1', d => yScale(d))
+    .attr('y2', d => yScale(d))
+    .attr('stroke', '#1f2937')
+    .attr('stroke-width', 1);
+
+  // Lockout annotation
+  g.append('line')
+    .attr('x1', xScale(2005)).attr('x2', xScale(2005))
+    .attr('y1', 0).attr('y2', h)
+    .attr('stroke', '#f59e0b')
+    .attr('stroke-width', 1)
+    .attr('stroke-dasharray', '4 3')
+    .attr('opacity', 0.5);
+
+  g.append('text')
+    .attr('x', xScale(2005) + 5).attr('y', 20)
+    .attr('font-family', "'Barlow Condensed', sans-serif")
+    .attr('font-size', 10)
+    .attr('font-weight', 600)
+    .attr('letter-spacing', 2)
+    .attr('fill', '#f59e0b')
+    .attr('opacity', 0.7)
+    .text('LOCKOUT');
+
+  // League average line
+  if (selectedCompare === 'league') {
+    const leagueData = getLeagueAvg(selectedMetric);
+    const lineGen = d3.line()
+      .x(d => xScale(d.year))
+      .y(d => yScale(d.value))
+      .curve(d3.curveMonotoneX);
+
+    g.append('path')
+      .datum(leagueData)
+      .attr('d', lineGen)
+      .attr('fill', 'none')
+      .attr('stroke', '#4b5563')
+      .attr('stroke-width', 1.5)
+      .attr('stroke-dasharray', '6 4')
+      .attr('opacity', 0.6);
+
+    g.append('text')
+      .attr('x', xScale(2024) + 4).attr('y', yScale(leagueData[leagueData.length-1].value))
+      .attr('font-family', "'Barlow Condensed', sans-serif")
+      .attr('font-size', 10)
+      .attr('fill', '#6b7280')
+      .attr('letter-spacing', 1)
+      .attr('dominant-baseline', 'middle')
+      .text('LGA');
+  }
+
+  // Area fill
+  const areaGen = d3.area()
+    .x(d => xScale(d.year))
+    .y0(h)
+    .y1(d => yScale(d[selectedMetric]))
+    .curve(d3.curveMonotoneX);
+
+  const defs = svg.append('defs');
+  const gradId = 'areaGrad_' + team.id;
+  const grad = defs.append('linearGradient')
+    .attr('id', gradId)
+    .attr('gradientUnits', 'userSpaceOnUse')
+    .attr('x1', 0).attr('y1', 0)
+    .attr('x2', 0).attr('y2', h);
+
+  grad.append('stop').attr('offset', '0%').attr('stop-color', team.color).attr('stop-opacity', 0.4);
+  grad.append('stop').attr('offset', '100%').attr('stop-color', team.color).attr('stop-opacity', 0.02);
+
+  g.append('path')
+    .datum(data)
+    .attr('d', areaGen)
+    .attr('fill', `url(#${gradId})`)
+    .attr('transform', 'translate(0, 0)')
+    .attr('opacity', 0)
+    .transition().duration(600).attr('opacity', 1);
+
+  // Main line
+  const lineGen = d3.line()
+    .x(d => xScale(d.year))
+    .y(d => yScale(d[selectedMetric]))
+    .curve(d3.curveMonotoneX);
+
+  const path = g.append('path')
+    .datum(data)
+    .attr('d', lineGen)
+    .attr('fill', 'none')
+    .attr('stroke', team.color === '#000000' || team.color === '#111111' ? '#c0c0c0' : team.color)
+    .attr('stroke-width', 2.5)
+    .attr('stroke-linejoin', 'round')
+    .attr('stroke-linecap', 'round');
+
+  // Animate line draw
+  const totalLength = path.node().getTotalLength();
+  path
+    .attr('stroke-dasharray', totalLength)
+    .attr('stroke-dashoffset', totalLength)
+    .transition().duration(900).ease(d3.easeCubicOut)
+    .attr('stroke-dashoffset', 0);
+
+  // Cup year markers
+  const cupData = data.filter(d => d.cup);
+  g.selectAll('.cup-marker')
+    .data(cupData)
+    .join('g')
+    .attr('class', 'cup-marker')
+    .attr('transform', d => `translate(${xScale(d.year)},${yScale(d[selectedMetric])})`)
+    .each(function() {
+      const el = d3.select(this);
+      el.append('circle')
+        .attr('r', 8)
+        .attr('fill', '#f5c842')
+        .attr('opacity', 0.15);
+      el.append('circle')
+        .attr('r', 4)
+        .attr('fill', '#f5c842')
+        .attr('stroke', '#fff')
+        .attr('stroke-width', 1.5);
+      el.append('text')
+        .attr('y', -14)
+        .attr('text-anchor', 'middle')
+        .attr('font-size', 14)
+        .text('🏆');
+    });
+
+  // Hover overlay
+  const bisector = d3.bisector(d => d.year).left;
+  const tooltip = document.getElementById('tooltip');
+
+  const overlay = g.append('rect')
+    .attr('width', w).attr('height', h)
+    .attr('fill', 'transparent')
+    .style('cursor', 'crosshair');
+
+  const hoverLine = g.append('line')
+    .attr('y1', 0).attr('y2', h)
+    .attr('stroke', '#4b5563')
+    .attr('stroke-width', 1)
+    .attr('stroke-dasharray', '4 3')
+    .attr('opacity', 0);
+
+  const hoverDot = g.append('circle')
+    .attr('r', 5)
+    .attr('fill', team.color === '#000000' || team.color === '#111111' ? '#c0c0c0' : team.color)
+    .attr('stroke', '#fff')
+    .attr('stroke-width', 2)
+    .attr('opacity', 0);
+
+  overlay.on('mousemove', function(event) {
+    const [mx] = d3.pointer(event);
+    const year = Math.round(xScale.invert(mx));
+    const idx = bisector(data, year);
+    const d = data[Math.max(0, Math.min(idx, data.length - 1))];
+    if (!d) return;
+
+    const x = xScale(d.year);
+    const y = yScale(d[selectedMetric]);
+
+    hoverLine.attr('x1', x).attr('x2', x).attr('opacity', 0.6);
+    hoverDot.attr('cx', x).attr('cy', y).attr('opacity', 1);
+
+    const rect = document.getElementById('main-chart').getBoundingClientRect();
+    tooltip.className = 'tooltip visible';
+    tooltip.style.left = (rect.left + margin.left + x + 16) + 'px';
+    tooltip.style.top = (rect.top + margin.top + y - 40) + 'px';
+
+    const leagueAvgPts = 0.500;
+    const diff = selectedMetric === 'pts_pct' ? ((d.pts_pct - leagueAvgPts) * 100).toFixed(1) : null;
+    const diffStr = diff ? `<div class="tooltip-row"><span class="tooltip-key">vs League</span><span class="tooltip-val" style="color:${diff>0?'#22c55e':'#ef4444'}">${diff>0?'+':''}${diff}%</span></div>` : '';
+
+    tooltip.innerHTML = `
+      <div class="tooltip-year">${d.year}–${String(d.year+1).slice(-2)} SEASON</div>
+      <div class="tooltip-row">
+        <span class="tooltip-key">${mc.label}</span>
+        <span class="tooltip-val">${mc.format(d[selectedMetric])}</span>
+      </div>
+      <div class="tooltip-row">
+        <span class="tooltip-key">GF/G</span>
+        <span class="tooltip-val">${d.gf}</span>
+      </div>
+      <div class="tooltip-row">
+        <span class="tooltip-key">GA/G</span>
+        <span class="tooltip-val">${d.ga}</span>
+      </div>
+      ${diffStr}
+      ${d.cup ? `<div class="tooltip-cup">🏆 Stanley Cup Champions</div>` : ''}
+    `;
+  });
+
+  overlay.on('mouseleave', () => {
+    hoverLine.attr('opacity', 0);
+    hoverDot.attr('opacity', 0);
+    tooltip.className = 'tooltip';
+  });
+
+  // X Axis
+  const xAxis = d3.axisBottom(xScale)
+    .tickValues(d3.range(1990, 2025, 4))
+    .tickFormat(d => `'${String(d).slice(-2)}`)
+    .tickSize(6);
+
+  const xAxisG = g.append('g')
+    .attr('transform', `translate(0,${h})`)
+    .call(xAxis);
+
+  xAxisG.select('.domain').attr('stroke', '#374151');
+  xAxisG.selectAll('.tick line').attr('stroke', '#374151');
+  xAxisG.selectAll('.tick text')
+    .attr('fill', '#6b7280')
+    .attr('font-family', "'Share Tech Mono', monospace")
+    .attr('font-size', 11);
+
+  // Y Axis
+  const yAxis = d3.axisLeft(yScale)
+    .ticks(6)
+    .tickFormat(d => mc.format(d))
+    .tickSize(6);
+
+  const yAxisG = g.append('g').call(yAxis);
+  yAxisG.select('.domain').attr('stroke', '#374151');
+  yAxisG.selectAll('.tick line').attr('stroke', '#374151');
+  yAxisG.selectAll('.tick text')
+    .attr('fill', '#6b7280')
+    .attr('font-family', "'Share Tech Mono', monospace")
+    .attr('font-size', 10);
+
+  // Y label
+  g.append('text')
+    .attr('transform', 'rotate(-90)')
+    .attr('x', -h/2).attr('y', -44)
+    .attr('text-anchor', 'middle')
+    .attr('font-family', "'Barlow Condensed', sans-serif")
+    .attr('font-size', 11)
+    .attr('font-weight', 600)
+    .attr('letter-spacing', 2)
+    .attr('fill', '#4b5563')
+    .attr('text-transform', 'uppercase')
+    .text(mc.label.toUpperCase());
+}
+
+// ── INIT ───────────────────────────────────────────────────────────────────────
+buildSidebar();
+updateChart();
+
+window.addEventListener('resize', () => {
+  const data = getTeamData(selectedTeam);
+  drawChart(data, METRIC_CONFIG[selectedMetric], selectedTeam);
+});
+</script>
+</body>
+</html>
