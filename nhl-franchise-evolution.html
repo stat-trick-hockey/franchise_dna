@@ -305,14 +305,191 @@
 
   .divider { width: 1px; height: 24px; background: var(--border); }
 
-  /* ── MAIN CHART AREA ── */
+  /* ── BOTTOM PANEL ── */
   .chart-area {
-    padding: 24px 28px 16px;
+    flex-shrink: 0;
+    padding: 24px 28px 12px;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    min-height: 0;
+  }
+
+  .bottom-panel {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 28px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .bottom-panel::-webkit-scrollbar { width: 4px; }
+  .bottom-panel::-webkit-scrollbar-track { background: transparent; }
+  .bottom-panel::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 2px; }
+
+  /* ── REGIME TIMELINE ── */
+  .regime-timeline {
+    padding: 16px 0 8px;
+    border-top: 1px solid var(--border);
+    margin-top: 14px;
+  }
+
+  .section-label {
+    font-family: var(--cond);
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .timeline-track {
+    position: relative;
+    padding-bottom: 8px;
+  }
+
+  .timeline-row {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    margin-bottom: 10px;
     position: relative;
   }
+
+  .timeline-row-label {
+    font-family: var(--cond);
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    width: 52px;
+    flex-shrink: 0;
+    padding-top: 6px;
+  }
+
+  .timeline-bars {
+    flex: 1;
+    display: flex;
+    position: relative;
+    height: 32px;
+  }
+
+  .regime-bar {
+    position: absolute;
+    top: 0; bottom: 0;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    overflow: hidden;
+    cursor: default;
+    transition: filter 0.15s;
+  }
+
+  .regime-bar:hover { filter: brightness(1.3); }
+
+  .regime-bar-text {
+    font-family: var(--cond);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: rgba(255,255,255,0.9);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    pointer-events: none;
+  }
+
+  .regime-bar-sub {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: rgba(255,255,255,0.5);
+    margin-left: 6px;
+    flex-shrink: 0;
+    pointer-events: none;
+  }
+
+  /* ── MILESTONES ── */
+  .milestones-section {
+    padding: 16px 0 8px;
+    border-top: 1px solid var(--border);
+    margin-top: 6px;
+  }
+
+  .milestones-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 8px;
+    margin-top: 14px;
+  }
+
+  .milestone-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .milestone-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+
+  .milestone-card[data-type="cup"]::before    { background: var(--gold); }
+  .milestone-card[data-type="trade"]::before  { background: #6366f1; }
+  .milestone-card[data-type="draft"]::before  { background: #22c55e; }
+  .milestone-card[data-type="arena"]::before  { background: #06b6d4; }
+  .milestone-card[data-type="regime"]::before { background: #f59e0b; }
+  .milestone-card[data-type="rebrand"]::before{ background: #ec4899; }
+  .milestone-card[data-type="move"]::before   { background: #f97316; }
+
+  .milestone-year {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+  }
+
+  .milestone-title {
+    font-family: var(--cond);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+  }
+
+  .milestone-desc {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+
+  .milestone-tag {
+    display: inline-block;
+    font-family: var(--cond);
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 2px;
+    margin-top: 6px;
+  }
+
+  .milestone-card[data-type="cup"]    .milestone-tag { background: rgba(245,200,66,0.15); color: var(--gold); }
+  .milestone-card[data-type="trade"]  .milestone-tag { background: rgba(99,102,241,0.15); color: #818cf8; }
+  .milestone-card[data-type="draft"]  .milestone-tag { background: rgba(34,197,94,0.15);  color: #4ade80; }
+  .milestone-card[data-type="arena"]  .milestone-tag { background: rgba(6,182,212,0.15);  color: #22d3ee; }
+  .milestone-card[data-type="regime"] .milestone-tag { background: rgba(245,158,11,0.15); color: #fbbf24; }
+  .milestone-card[data-type="rebrand"].milestone-tag { background: rgba(236,72,153,0.15); color: #f472b6; }
+  .milestone-card[data-type="move"]   .milestone-tag { background: rgba(249,115,22,0.15); color: #fb923c; }
+
+
 
   .chart-header {
     display: flex;
@@ -462,6 +639,84 @@
     opacity: 0.5;
   }
 
+  /* ── ERA REPORT CARD ── */
+  .report-card {
+    flex-shrink: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    padding: 14px 0 4px;
+    border-top: 1px solid var(--border);
+    margin-top: 10px;
+  }
+
+  .rc-cell {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .rc-cell::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    border-radius: 6px 0 0 6px;
+  }
+
+  .rc-cell[data-era="0"]::before { background: #3b82f6; }
+  .rc-cell[data-era="1"]::before { background: #f59e0b; }
+  .rc-cell[data-era="2"]::before { background: #10b981; }
+  .rc-cell[data-era="3"]::before { background: #ec4899; }
+
+  .rc-grade {
+    font-family: var(--cond);
+    font-size: 40px;
+    font-weight: 900;
+    line-height: 1;
+    min-width: 36px;
+    text-align: center;
+  }
+
+  .rc-info { flex: 1; min-width: 0; }
+
+  .rc-era-name {
+    font-family: var(--cond);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+
+  .rc-stat {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--text);
+    margin-top: 3px;
+  }
+
+  .rc-sub {
+    font-family: var(--cond);
+    font-size: 10px;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+
+  .rc-cups {
+    font-size: 12px;
+    margin-top: 2px;
+    letter-spacing: 1px;
+  }
+
   /* Playoff run indicator */
   .playoff-badge {
     display: inline-flex;
@@ -559,7 +814,7 @@
   </aside>
 
   <!-- MAIN CONTENT -->
-  <div style="display:flex;flex-direction:column;overflow:hidden;">
+  <div style="display:flex;flex-direction:column;overflow:hidden;height:100%;">
     <div class="control-bar">
       <div class="control-group">
         <span class="control-label">Metric</span>
@@ -611,6 +866,13 @@
         <div class="era-item"><div class="era-swatch" style="background:#ec4899"></div>Modern Era (2020–2024)</div>
         <div class="era-item"><div class="era-swatch" style="background:#f5c842;opacity:1"></div>Stanley Cup 🏆</div>
       </div>
+    </div>
+
+    <!-- SCROLLABLE BOTTOM PANEL -->
+    <div class="bottom-panel">
+      <div class="report-card" id="report-card"></div>
+      <div class="regime-timeline" id="regime-timeline"></div>
+      <div class="milestones-section" id="milestones-section"></div>
     </div>
   </div>
 </div>
@@ -899,6 +1161,546 @@ document.querySelectorAll('[data-compare]').forEach(btn => {
   });
 });
 
+// ── ERA REPORT CARD ────────────────────────────────────────────────────────────
+const ERA_DEFS = [
+  { label: 'Pre-Lockout', short: '1990–2004', start: 1990, end: 2004, color: '#3b82f6' },
+  { label: 'Post-Lockout', short: '2005–2012', start: 2006, end: 2012, color: '#f59e0b' },
+  { label: 'Analytics Era', short: '2013–2019', start: 2013, end: 2019, color: '#10b981' },
+  { label: 'Modern Era',    short: '2020–2024', start: 2020, end: 2024, color: '#ec4899' },
+];
+
+// League-average pts_pct by era (always 0.500 but captured per era for other metrics)
+const LEAGUE_ERA_AVG = {
+  pts_pct: [0.500, 0.500, 0.500, 0.500],
+  gf:      [3.10,  2.82,  2.74,  3.03],
+  ga:      [3.10,  2.82,  2.74,  3.03],
+  pp_pct:  [17.9,  18.7,  19.4,  20.8],
+  pk_pct:  [82.0,  81.5,  80.8,  79.2],
+};
+
+function scoreToGrade(score) {
+  // score is z-score relative to league average; thresholds tuned for NHL spread
+  if (score >= 1.6)  return { letter: 'A+', color: '#22c55e' };
+  if (score >= 1.1)  return { letter: 'A',  color: '#22c55e' };
+  if (score >= 0.7)  return { letter: 'A−', color: '#4ade80' };
+  if (score >= 0.35) return { letter: 'B+', color: '#86efac' };
+  if (score >= 0.05) return { letter: 'B',  color: '#a3e635' };
+  if (score >= -0.2) return { letter: 'B−', color: '#d9f99d' };
+  if (score >= -0.5) return { letter: 'C+', color: '#facc15' };
+  if (score >= -0.8) return { letter: 'C',  color: '#fbbf24' };
+  if (score >= -1.1) return { letter: 'C−', color: '#fb923c' };
+  if (score >= -1.4) return { letter: 'D+', color: '#f87171' };
+  if (score >= -1.7) return { letter: 'D',  color: '#ef4444' };
+  if (score >= -2.1) return { letter: 'D−', color: '#dc2626' };
+  return               { letter: 'F',  color: '#991b1b' };
+}
+
+// Std dev of pts_pct across teams per era (estimated from historical variance)
+const ERA_STDEV = [0.095, 0.088, 0.085, 0.090];
+
+function renderReportCard(data, team) {
+  const playoffData = PLAYOFF_HISTORY[team.id] || {};
+  const container = document.getElementById('report-card');
+  container.innerHTML = '';
+
+  ERA_DEFS.forEach((era, i) => {
+    const eraSeasons = data.filter(d => d.year >= era.start && d.year <= era.end);
+    if (eraSeasons.length === 0) {
+      // Team didn't exist yet — show placeholder
+      const cell = document.createElement('div');
+      cell.className = 'rc-cell';
+      cell.dataset.era = i;
+      cell.innerHTML = `
+        <div class="rc-grade" style="color:var(--text-dim)">—</div>
+        <div class="rc-info">
+          <div class="rc-era-name">${era.label}</div>
+          <div class="rc-sub">${era.short}</div>
+          <div class="rc-sub" style="margin-top:4px">Franchise not yet active</div>
+        </div>`;
+      container.appendChild(cell);
+      return;
+    }
+
+    const avgPts = eraSeasons.reduce((s, d) => s + d.pts_pct, 0) / eraSeasons.length;
+    const leagueAvg = LEAGUE_ERA_AVG.pts_pct[i];
+    const baseZ = (avgPts - leagueAvg) / ERA_STDEV[i];
+
+    // Cups in era
+    const eraCups = team.cups.filter(yr => yr >= era.start && yr <= era.end);
+    const cupsStr = eraCups.length > 0 ? '🏆'.repeat(eraCups.length) : '';
+
+    // Cup boost: each Cup win adds 0.6 z-score points (roughly one letter grade),
+    // capped at +1.5 so a Cup-winning team can't coast on it alone
+    const cupBoost = Math.min(eraCups.length * 0.6, 1.5);
+    const zScore = baseZ + cupBoost;
+    const { letter, color } = scoreToGrade(zScore);
+    const boosted = cupBoost > 0;
+
+    // Trend arrow via linear regression slope across era seasons
+    let trend = '';
+    if (eraSeasons.length >= 3) {
+      const n = eraSeasons.length;
+      const xMean = eraSeasons.reduce((s, d) => s + d.year, 0) / n;
+      const yMean = avgPts;
+      const num = eraSeasons.reduce((s, d) => s + (d.year - xMean) * (d.pts_pct - yMean), 0);
+      const den = eraSeasons.reduce((s, d) => s + (d.year - xMean) ** 2, 0);
+      const slope = den !== 0 ? num / den : 0;
+      // slope is pts_pct change per year; threshold of ±0.004/yr (~0.4% per year) to filter noise
+      if (slope > 0.004)       trend = '<span style="color:#22c55e;font-size:12px" title="Improving trend">▲</span>';
+      else if (slope < -0.004) trend = '<span style="color:#ef4444;font-size:12px" title="Declining trend">▼</span>';
+      else                     trend = '<span style="color:#6b7280;font-size:12px" title="Flat trend">━</span>';
+    }
+
+    // Playoff appearances in this era
+    const eraYears = eraSeasons.map(d => d.year);
+    const playoffApps = eraYears.filter(yr => playoffData[yr] === 1).length;
+    const playoffStr = `${playoffApps}/${eraYears.length} playoffs`;
+
+    const cell = document.createElement('div');
+    cell.className = 'rc-cell';
+    cell.dataset.era = i;
+    cell.title = boosted
+      ? `Base grade from PTS%: ${scoreToGrade(baseZ).letter} — boosted by ${eraCups.length} Cup win${eraCups.length > 1 ? 's' : ''}`
+      : '';
+    cell.innerHTML = `
+      <div class="rc-grade" style="color:${color}">${letter}</div>
+      <div class="rc-info">
+        <div class="rc-era-name">${era.label}</div>
+        <div class="rc-stat">${(avgPts * 100).toFixed(1)}% pts ${trend}${boosted ? ` <span style="color:var(--gold);font-size:10px;letter-spacing:1px">+CUP</span>` : ''}</div>
+        <div class="rc-sub">${playoffStr}${cupsStr ? ' · ' + cupsStr : ''}</div>
+      </div>`;
+    container.appendChild(cell);
+  });
+}
+
+// ── REGIME & MILESTONE DATA ────────────────────────────────────────────────────
+// Each team has coaches[] and gms[] (start year, name) + milestones[]
+
+const FRANCHISE_DATA = {
+  'TOR': {
+    coaches: [{y:1990,n:'Tom Watt'},{y:1992,n:'Pat Burns'},{y:1996,n:'Mike Murphy'},{y:1997,n:'Mike Murphy'},{y:1998,n:'Pat Quinn'},{y:2006,n:'Paul Maurice'},{y:2008,n:'Ron Wilson'},{y:2012,n:'Randy Carlyle'},{y:2014,n:'Peter Horachek'},{y:2015,n:'Mike Babcock'},{y:2019,n:'Sheldon Keefe'},{y:2024,n:'Craig Berube'}],
+    gms: [{y:1990,n:'Gord Stellick'},{y:1991,n:'Cliff Fletcher'},{y:1997,n:'Ken Dryden'},{y:1999,n:'Pat Quinn'},{y:2003,n:'John Ferguson Jr.'},{y:2008,n:'Cliff Fletcher'},{y:2008,n:'Brian Burke'},{y:2013,n:'Dave Nonis'},{y:2015,n:'Lou Lamoriello'},{y:2016,n:'Kyle Dubas'},{y:2023,n:'Brad Treliving'}],
+    milestones: [
+      {y:1993,type:'regime',title:'Pat Burns Era Begins',desc:'Defensive overhaul transforms Leafs into playoff contenders. Back-to-back deep runs follow.'},
+      {y:1999,type:'arena',title:'Air Canada Centre Opens',desc:'Leafs leave Maple Leaf Gardens after 68 years, ending an era of hockey history.'},
+      {y:2016,type:'draft',title:'Auston Matthews — 1st Overall',desc:'Generational centre selected, launching the Leafs\' core rebuild around Matthews, Marner & Nylander.'},
+      {y:2017,type:'regime',title:'Babcock\'s Youth Movement',desc:'Youngest roster in the league makes playoffs. Start of the "Core Four" window.'},
+      {y:2019,type:'regime',title:'Dubas Trades for Tavares',desc:'John Tavares signs as UFA. High expectations set for a Stanley Cup contender.'},
+      {y:2023,type:'regime',title:'Brad Treliving Takes Over',desc:'Dubas departs after first-round exit. Treliving hired to push the window open.'},
+    ]
+  },
+  'MTL': {
+    coaches: [{y:1990,n:'Pat Burns'},{y:1992,n:'Jacques Demers'},{y:1995,n:'Mario Tremblay'},{y:1997,n:'Alain Vigneault'},{y:2000,n:'Michel Therrien'},{y:2003,n:'Claude Julien'},{y:2006,n:'Guy Carbonneau'},{y:2009,n:'Jacques Martin'},{y:2011,n:'Randy Cunneyworth'},{y:2012,n:'Michel Therrien'},{y:2017,n:'Claude Julien'},{y:2021,n:'Dominique Ducharme'},{y:2022,n:'Martin St. Louis'}],
+    gms: [{y:1990,n:'Serge Savard'},{y:1995,n:'Réjean Houle'},{y:2000,n:'André Savard'},{y:2003,n:'Bob Gainey'},{y:2010,n:'Pierre Gauthier'},{y:2012,n:'Marc Bergevin'},{y:2021,n:'Kent Hughes'}],
+    milestones: [
+      {y:1993,type:'cup',title:'24th Stanley Cup',desc:'Jacques Demers & Patrick Roy lead Montreal to their last championship — still the most Cups in NHL history.'},
+      {y:1995,type:'trade',title:'Patrick Roy Trade',desc:'Roy demands trade after being left in during 9-1 loss to Detroit. Sent to Colorado, ending an era.'},
+      {y:2002,type:'arena',title:'Bell Centre Era',desc:'Now fully established as one of hockey\'s loudest buildings. Season-ticket waiting list 10,000+ long.'},
+      {y:2021,type:'regime',title:'Surprise Cup Final Run',desc:'Carey Price leads improbable run to Stanley Cup Final — furthest since 1993. Lost to Tampa.'},
+      {y:2022,type:'regime',title:'Martin St. Louis Hired',desc:'Legend takes over mid-season, ushering in rebuild era around Caufield, Slafkovsky & Anderson.'},
+    ]
+  },
+  'DET': {
+    coaches: [{y:1990,n:'Bryan Murray'},{y:1993,n:'Scotty Bowman'},{y:2002,n:'Dave Lewis'},{y:2005,n:'Mike Babcock'},{y:2015,n:'Jeff Blashill'},{y:2022,n:'Derek Lalonde'}],
+    gms: [{y:1990,n:'Jimmy Devellano'},{y:1994,n:'Ken Holland'},{y:2019,n:'Steve Yzerman'}],
+    milestones: [
+      {y:1993,type:'regime',title:'Scotty Bowman Takes Over',desc:'Greatest coach in NHL history arrives. Detroit\'s dynasty era officially launches.'},
+      {y:1997,type:'cup',title:'First Cup Since 1955',desc:'42-year drought ends. Fedorov, Yzerman & Shanahan lead the Production Line revival.'},
+      {y:1998,type:'cup',title:'Back-to-Back',desc:'Red Wings repeat as champions, cementing their dynasty status in the dead-puck era.'},
+      {y:2002,type:'cup',title:'The Greatest Team Ever?',desc:'Roster featuring 9 Hall-of-Famers wins Cup. Hasek, Lidstrom, Yzerman, Hull headline the lineup.'},
+      {y:2008,type:'cup',title:'Last Cup Win',desc:'Lidstrom becomes first European captain to hoist the Cup. Zebana handles goaltending duties.'},
+      {y:2019,type:'regime',title:'Yzerman Returns as GM',desc:'Captain Steve comes back to rebuild. "The Rebuild" era begins with an eye toward 2025+.'},
+    ]
+  },
+  'PIT': {
+    coaches: [{y:1990,n:'Bob Johnson'},{y:1991,n:'Scotty Bowman'},{y:1993,n:'Eddie Johnston'},{y:1997,n:'Kevin Constantine'},{y:2000,n:'Ivan Hlinka'},{y:2001,n:'Rick Kehoe'},{y:2003,n:'Ed Olczyk'},{y:2004,n:'Michel Therrien'},{y:2006,n:'Michel Therrien'},{y:2009,n:'Dan Bylsma'},{y:2014,n:'Mike Johnston'},{y:2015,n:'Mike Sullivan'},{y:2021,n:'Mike Sullivan'}],
+    gms: [{y:1990,n:'Tony Esposito'},{y:1993,n:'Craig Patrick'},{y:2006,n:'Ray Shero'},{y:2014,n:'Jim Rutherford'},{y:2021,n:'Ron Hextall'}],
+    milestones: [
+      {y:1991,type:'cup',title:'Back-to-Back Begins',desc:'Lemieux & Jagr lead the Penguins to their first championship. Dynasty window opens.'},
+      {y:1992,type:'cup',title:'Repeat Champions',desc:'Bowman wins another Cup. Penguins cement status as the early 90s dominant force.'},
+      {y:2005,type:'draft',title:'Sidney Crosby — 1st Overall',desc:'Crosby selected with the lottery pick earned from the worst season in team history.'},
+      {y:2009,type:'cup',title:'Crosby Wins the Cup',desc:'Youngest captain to win the Cup. Malkin wins Conn Smythe. New dynasty declared.'},
+      {y:2016,type:'cup',title:'Back-to-Back Begins Again',desc:'Sullivan\'s systems-based approach delivers another championship. Malkin MVP again.'},
+      {y:2017,type:'cup',title:'Third Cup in Eight Years',desc:'Repeat champions. Crosby wins back-to-back Conn Smythes — one of the great dynasties.'},
+    ]
+  },
+  'BOS': {
+    coaches: [{y:1990,n:'Mike Milbury'},{y:1991,n:'Rick Bowness'},{y:1992,n:'Brian Sutter'},{y:1995,n:'Steve Kasper'},{y:1997,n:'Pat Burns'},{y:2000,n:'Mike Keenan'},{y:2000,n:'Robbie Ftorek'},{y:2003,n:'Mike Sullivan'},{y:2004,n:'Claude Julien'},{y:2017,n:'Bruce Cassidy'},{y:2022,n:'Jim Montgomery'}],
+    gms: [{y:1990,n:'Harry Sinden'},{y:2000,n:'Mike O\'Connell'},{y:2006,n:'Peter Chiarelli'},{y:2015,n:'Don Sweeney'}],
+    milestones: [
+      {y:1996,type:'trade',title:'Joe Thornton Drafted 1st',desc:'Big Joe arrives — spends nine years in Boston before blockbuster trade to San Jose in 2005.'},
+      {y:2006,type:'draft',title:'Patrice Bergeron Core Builds',desc:'Lucic, Chara signed as Bruins build defensive identity under Julien & Chiarelli.'},
+      {y:2011,type:'cup',title:'The Cup Returns to Boston',desc:'First championship since 1972. Thomas wins Conn Smythe. Bruins beat Canucks in 7 games.'},
+      {y:2019,type:'regime',title:'Stanley Cup Final Again',desc:'Bergeron-led Bruins return to the Final — lose to Blues in Game 7. The near-miss era.'},
+      {y:2023,type:'regime',title:'Record-Setting Season',dest:'Presidents\' Trophy season, best record in the East. Another deep playoff push.'},
+    ]
+  },
+  'CHI': {
+    coaches: [{y:1990,n:'Mike Keenan'},{y:1992,n:'Darryl Sutter'},{y:1995,n:'Craig Hartsburg'},{y:1997,n:'Dirk Graham'},{y:1999,n:'Lorne Molleken'},{y:2000,n:'Alpo Suhonen'},{y:2001,n:'Brian Sutter'},{y:2005,n:'Trent Yawney'},{y:2006,n:'Denis Savard'},{y:2008,n:'Joel Quenneville'},{y:2018,n:'Jeremy Colliton'},{y:2021,n:'Derek King'},{y:2022,n:'Luke Richardson'}],
+    gms: [{y:1990,n:'Mike Keenan'},{y:1992,n:'Bob Pulford'},{y:1997,n:'Bob Murray'},{y:1999,n:'Mike Smith'},{y:2007,n:'Dale Tallon'},{y:2009,n:'Stan Bowman'},{y:2021,n:'Kyle Davidson'}],
+    milestones: [
+      {y:2007,type:'draft',title:'Patrick Kane & Toews',desc:'Franchise pillars arrive. Toews in 2006, Kane 2007 — the most celebrated back-to-back picks in NHL history.'},
+      {y:2008,type:'regime',title:'Quenneville Takes Over',desc:'Joel Q transforms the Blackhawks into the dominant team of the 2010s.'},
+      {y:2010,type:'cup',title:'Curse Broken — First Cup Since 1961',desc:'49-year drought ends. Toews wins Conn Smythe as captain. Dynasty declared.'},
+      {y:2013,type:'cup',title:'Second Cup in Four Years',desc:'Blackhawks win again in lockout-shortened season. Shaw scores in OT to clinch.'},
+      {y:2015,type:'cup',title:'Three Cups in Six Years',desc:'Duncan Keith wins Conn Smythe. Chicago joins elite club of 3-time dynasty franchises.'},
+      {y:2022,type:'regime',title:'Bedard Era Begins',desc:'Connor Bedard selected 1st overall — the most hyped prospect since Crosby.'},
+    ]
+  },
+  'COL': {
+    coaches: [{y:1990,n:'Dave Watt'},{y:1992,n:'Pierre Page'},{y:1995,n:'Marc Crawford'},{y:1999,n:'Bob Hartley'},{y:2003,n:'Tony Granato'},{y:2004,n:'Joel Quenneville'},{y:2005,n:'Joel Quenneville'},{y:2009,n:'Joe Sacco'},{y:2013,n:'Patrick Roy'},{y:2016,n:'Jared Bednar'}],
+    gms: [{y:1990,n:'Pierre Lacroix'},{y:2006,n:'François Giguère'},{y:2009,n:'Greg Sherman'},{y:2013,n:'Joe Sakic'}],
+    milestones: [
+      {y:1995,type:'move',title:'Nordiques Relocate to Denver',desc:'One of hockey\'s most controversial moves. Quebec loses the Nordiques; Colorado gains a dynasty.'},
+      {y:1996,type:'cup',title:'Cup in First Colorado Season',desc:'Patrick Roy traded mid-year leads Avs to championship in their first Denver season. Instant dynasty.'},
+      {y:2001,type:'cup',title:'Roy\'s Final Championship',desc:'Avs beat New Jersey. Roy wins third Conn Smythe — retires as the greatest goalie ever.'},
+      {y:2013,type:'regime',title:'Patrick Roy Returns as Coach',desc:'Legend takes the bench. Accelerates rebuild around MacKinnon and Landeskog.'},
+      {y:2019,type:'draft',title:'Cale Makar 4th Overall',desc:'Makar arrives as perhaps the most complete defenceman prospect in modern NHL history.'},
+      {y:2022,type:'cup',title:'20-Year Drought Ends',desc:'MacKinnon, Makar & Landeskog win it all. Makar wins Conn Smythe. A new dynasty crowned.'},
+    ]
+  },
+  'TBL': {
+    coaches: [{y:1992,n:'Terry Crisp'},{y:1997,n:'Rick Paterson'},{y:1999,n:'Steve Ludzik'},{y:2001,n:'John Tortorella'},{y:2008,n:'Barry Melrose'},{y:2008,n:'Rick Tocchet'},{y:2010,n:'Guy Boucher'},{y:2013,n:'Jon Cooper'}],
+    gms: [{y:1992,n:'Phil Esposito'},{y:1998,n:'Rick Dudley'},{y:1999,n:'Jay Feaster'},{y:2008,n:'Brian Lawton'},{y:2010,n:'Steve Yzerman'},{y:2010,n:'Steve Yzerman'},{y:2018,n:'Julien BriseBois'}],
+    milestones: [
+      {y:2004,type:'cup',title:'First Stanley Cup',desc:'Brad Richards wins Conn Smythe as Tortorella\'s trap system dismantles every opponent.'},
+      {y:2010,type:'regime',title:'Yzerman Builds Through Draft',desc:'Steve Y rebuilds around Stamkos, then adds Kucherov, Hedman — one of the great team builds.'},
+      {y:2013,type:'regime',title:'Jon Cooper Takes Over',desc:'Cooper becomes the architect of sustained excellence, coaching Lightning to 10+ playoff appearances.'},
+      {y:2020,type:'cup',title:'Cup in Bubble — Pandemic Season',desc:'Tampa\'s dominant roster finally wins. Vasilevskiy crucial. Kucherov plays injured all season.'},
+      {y:2021,type:'cup',title:'Back-to-Back',desc:'Rare repeat champions in salary-cap era. Stamkos lifts the Cup on bad leg. A historic team.'},
+    ]
+  },
+  'WSH': {
+    coaches: [{y:1990,n:'Bryan Murray'},{y:1997,n:'Ron Wilson'},{y:2002,n:'Bruce Cassidy'},{y:2003,n:'Glen Hanlon'},{y:2007,n:'Bruce Boudreau'},{y:2011,n:'Dale Hunter'},{y:2012,n:'Adam Oates'},{y:2014,n:'Barry Trotz'},{y:2018,n:'Todd Reirden'},{y:2020,n:'Peter Laviolette'}],
+    gms: [{y:1990,n:'David Poile'},{y:1997,n:'George McPhee'},{y:2014,n:'Brian MacLellan'}],
+    milestones: [
+      {y:2004,type:'draft',title:'Alexander Ovechkin 1st Overall',desc:'The Great Eight selected. Changes the franchise forever. Will retire as the greatest goal scorer ever.'},
+      {y:2007,type:'regime',title:'Boudreau\'s Run-and-Gun Era',desc:'Ovechkin puts up insane numbers. Caps win Presidents\' Trophy twice. Playoff disappointments follow.'},
+      {y:2014,type:'regime',title:'Trotz System Changes Everything',desc:'Defensive-minded approach finally gets Washington past first round, eventually to the promised land.'},
+      {y:2018,type:'cup',title:'First Stanley Cup',desc:'Holtby, Ovechkin, Backstrom & Carlson finally break through. Ovechkin wins Conn Smythe.'},
+    ]
+  },
+  'NJD': {
+    coaches: [{y:1990,n:'Tom McVie'},{y:1991,n:'Herb Brooks'},{y:1993,n:'Jacques Lemaire'},{y:1998,n:'Robbie Ftorek'},{y:2000,n:'Larry Robinson'},{y:2002,n:'Pat Burns'},{y:2005,n:'Larry Robinson'},{y:2005,n:'Claude Julien'},{y:2007,n:'Brent Sutter'},{y:2009,n:'John MacLean'},{y:2010,n:'Jacques Lemaire'},{y:2011,n:'Pete DeBoer'},{y:2012,n:'Peter DeBoer'},{y:2015,n:'John Hynes'},{y:2019,n:'Alain Nasreddine'},{y:2020,n:'Lindy Ruff'},{y:2023,n:'Sheldon Keefe'}],
+    gms: [{y:1990,n:'Lou Lamoriello'},{y:2015,n:'Ray Shero'},{y:2020,n:'Tom Fitzgerald'}],
+    milestones: [
+      {y:1993,type:'regime',title:'Lemaire\'s Neutral Zone Trap',desc:'Jacques Lemaire introduces the trap — changes how hockey is played league-wide for a decade.'},
+      {y:1995,type:'cup',title:'First Stanley Cup',desc:'Devils shut down every attack. Scott Stevens & Martin Brodeur lead a defensive masterpiece.'},
+      {y:2000,type:'cup',title:'Second Cup',desc:'Brodeur is unstoppable. Stevens delivers his famous Lindros hit. Devils win in 6.'},
+      {y:2003,type:'cup',title:'Third Cup in Nine Years',desc:'Brodeur and Scott Stevens lead one final championship. A dynasty defined by system and goaltending.'},
+      {y:2022,type:'draft',title:'Jack Hughes Era Begins',desc:'1st overall pick from 2019 emerges as a star. Hischier & Hughes form a formidable 1-2 punch.'},
+    ]
+  },
+  'NYR': {
+    coaches: [{y:1990,n:'Roger Neilson'},{y:1993,n:'Mike Keenan'},{y:1994,n:'Colin Campbell'},{y:1998,n:'John Muckler'},{y:2000,n:'Ron Low'},{y:2002,n:'Bryan Trottier'},{y:2003,n:'Glen Sather'},{y:2004,n:'Tom Renney'},{y:2009,n:'John Tortorella'},{y:2013,n:'Alain Vigneault'},{y:2018,n:'David Quinn'},{y:2021,n:'Gerard Gallant'}],
+    gms: [{y:1990,n:'Neil Smith'},{y:2000,n:'Glen Sather'},{y:2023,n:'Chris Drury'}],
+    milestones: [
+      {y:1991,type:'trade',title:'Mark Messier Traded From EDM',desc:'Messier arrives and immediately transforms the culture. Leadership and accountability restored.'},
+      {y:1994,type:'cup',title:'The 54-Year Drought Ends',desc:'Messier\'s guarantee, Leetch\'s brilliance, Richter\'s heroics. Rangers finally win the Cup.'},
+      {y:2004,type:'regime',title:'Lundqvist Era Begins',desc:'Henrik Lundqvist drafted. Spends 15 years as the backbone of the franchise — "The King" reigns.'},
+      {y:2012,type:'trade',title:'Rick Nash Trade',desc:'Power forward acquired from Columbus. High expectations, mixed results.'},
+      {y:2020,type:'regime',title:'Rebuild Around Lafrenière',desc:'1st overall pick Alexis Lafrenière joins Zibanejad & Fox. Fastest rebuild in Rangers history.'},
+    ]
+  },
+  'EDM': {
+    coaches: [{y:1990,n:'John Muckler'},{y:1991,n:'Ted Green'},{y:1993,n:'George Burnett'},{y:1994,n:'Ron Low'},{y:1999,n:'Kevin Lowe'},{y:2000,n:'Craig MacTavish'},{y:2009,n:'Pat Quinn'},{y:2010,n:'Tom Renney'},{y:2012,n:'Ralph Krueger'},{y:2013,n:'Dallas Eakins'},{y:2015,n:'Todd McLellan'},{y:2019,n:'Dave Tippett'},{y:2022,n:'Jay Woodcroft'},{y:2024,n:'Kris Knoblauch'}],
+    gms: [{y:1990,n:'Glen Sather'},{y:2000,n:'Kevin Lowe'},{y:2008,n:'Steve Tambellini'},{y:2013,n:'Craig MacTavish'},{y:2016,n:'Peter Chiarelli'},{y:2019,n:'Ken Holland'}],
+    milestones: [
+      {y:1990,type:'cup',title:'Last Cup of the Dynasty',desc:'Fifth Cup in seven years. Messier, Fuhr & Coffey lead the final chapter of the greatest dynasty ever.'},
+      {y:1999,type:'trade',title:'Gretzky Era Truly Ends',desc:'Wayne officially retires. Oilers enter two decades of irrelevance and rebuilding.'},
+      {y:2015,type:'draft',title:'Connor McDavid 1st Overall',desc:'Generational talent arrives. Immediately becomes the best player in the world. Franchise reborn.'},
+      {y:2017,type:'regime',title:'Return to Playoffs',desc:'First playoff appearance in 11 years. McDavid & Draisaitl form the most lethal duo in the game.'},
+      {y:2022,type:'regime',title:'Western Conference Finals',desc:'Closest yet to another Cup. Knoblauch\'s system unlocks McDavid & Draisaitl to their fullest.'},
+      {y:2024,type:'regime',title:'Stanley Cup Final',desc:'Oilers reach the Final for first time since 2006 — push Panthers to Game 7 before falling short.'},
+    ]
+  },
+  'VAN': {
+    coaches: [{y:1990,n:'Bob McCammon'},{y:1991,n:'Pat Quinn'},{y:1994,n:'Rick Ley'},{y:1996,n:'Tom Renney'},{y:1997,n:'Mike Keenan'},{y:1999,n:'Marc Crawford'},{y:2006,n:'Alain Vigneault'},{y:2013,n:'John Tortorella'},{y:2014,n:'Willie Desjardins'},{y:2017,n:'Travis Green'},{y:2022,n:'Bruce Boudreau'},{y:2023,n:'Rick Tocchet'}],
+    gms: [{y:1990,n:'Pat Quinn'},{y:1998,n:'Brian Burke'},{y:2004,n:'Dave Nonis'},{y:2008,n:'Mike Gillis'},{y:2014,n:'Jim Benning'},{y:2021,n:'Patrik Allvin'}],
+    milestones: [
+      {y:1994,type:'regime',title:'Pat Quinn\'s Cup Final Run',desc:'Linden, Bure & McLean take Vancouver to Game 7 of the Final — lose heartbreaker to Rangers.'},
+      {y:1999,type:'draft',title:'Sedin Twins Drafted',desc:'Daniel & Henrik selected back-to-back at 2nd and 3rd overall. Define the next 17 years.'},
+      {y:2011,type:'regime',title:'Presidents\' Trophy & Cup Final',desc:'Best team in hockey. Luongo & the Sedins fall to Boston in devastating Game 7.'},
+      {y:2017,type:'regime',title:'Full Rebuild Launched',desc:'Sedins retire. Pettersson, Hughes & Boeser become the new pillars. Patience required.'},
+      {y:2024,type:'regime',title:'Presidents\' Trophy Contenders',desc:'Pettersson & Quinn Hughes lead a surprise elite season — Canucks back among the elite.'},
+    ]
+  },
+  'FLA': {
+    coaches: [{y:1993,n:'Roger Neilson'},{y:1995,n:'Doug MacLean'},{y:1997,n:'Bryan Murray'},{y:2000,n:'Terry Murray'},{y:2001,n:'Duane Sutter'},{y:2003,n:'Mike Keenan'},{y:2004,n:'Jacques Martin'},{y:2011,n:'Kevin Dineen'},{y:2013,n:'Peter Horachek'},{y:2014,n:'Gerard Gallant'},{y:2016,n:'Tom Rowe'},{y:2017,n:'Bob Boughner'},{y:2019,n:'Joel Quenneville'},{y:2021,n:'Andrew Brunette'},{y:2022,n:'Paul Maurice'}],
+    gms: [{y:1993,n:'Bob Clarke'},{y:1994,n:'Bryan Murray'},{y:2000,n:'Chuck Fletcher'},{y:2010,n:'Dale Tallon'},{y:2016,n:'Tom Rowe'},{y:2017,n:'Dale Tallon'},{y:2020,n:'Bill Zito'}],
+    milestones: [
+      {y:1994,type:'regime',title:'Expansion Franchise Born',desc:'Panthers enter the league. Roger Neilson\'s defensive system immediately earns respect.'},
+      {y:1996,type:'regime',title:'Cinderella Cup Final Run',desc:'Just third year of existence — Panthers reach the Stanley Cup Final, losing to Colorado.'},
+      {y:2022,type:'draft',title:'Matthew Tkachuk Trade',desc:'Blockbuster: Jonathan Huberdeau to Calgary, Tkachuk to Florida. Franchise-altering swap.'},
+      {y:2023,type:'regime',title:'Return to Cup Final',desc:'Back to the Final again — lose to Vegas. Tkachuk and Barkov establish Florida as a powerhouse.'},
+      {y:2024,type:'cup',title:'First Stanley Cup',desc:'Barkov lifts the Cup. Reinhart wins Conn Smythe. Florida\'s patient build finally pays off.'},
+    ]
+  },
+  'STL': {
+    coaches: [{y:1990,n:'Brian Sutter'},{y:1992,n:'Bob Plager'},{y:1992,n:'Joel Quenneville'},{y:1997,n:'Joel Quenneville'},{y:1999,n:'Joel Quenneville'},{y:2004,n:'Mike Kitchen'},{y:2006,n:'Andy Murray'},{y:2009,n:'Davis Payne'},{y:2011,n:'Ken Hitchcock'},{y:2017,n:'Mike Yeo'},{y:2018,n:'Craig Berube'}],
+    gms: [{y:1990,n:'Ron Caron'},{y:1997,n:'Larry Pleau'},{y:2010,n:'Doug Armstrong'}],
+    milestones: [
+      {y:2012,type:'regime',title:'Hitchcock\'s Defensive Renaissance',desc:'Blues go from worst record to Presidents\' Trophy. One of the greatest single-season turnarounds.'},
+      {y:2018,type:'regime',title:'Craig Berube Mid-Season Hire',desc:'Interim tag removed after Blues sit last in the league on January 3rd. The rest is history.'},
+      {y:2019,type:'cup',title:'Greatest Comeback Story in NHL History',desc:'Last place in January to Stanley Cup Champions in June. O\'Reilly wins Conn Smythe. "Gloria" anthem.'},
+    ]
+  },
+  'DAL': {
+    coaches: [{y:1993,n:'Bob Gainey'},{y:1996,n:'Ken Hitchcock'},{y:2002,n:'Dave Tippett'},{y:2009,n:'Marc Crawford'},{y:2011,n:'Glen Gulutzan'},{y:2013,n:'Lindy Ruff'},{y:2017,n:'Ken Hitchcock'},{y:2018,n:'Jim Montgomery'},{y:2019,n:'Rick Bowness'},{y:2022,n:'Pete DeBoer'}],
+    gms: [{y:1993,n:'Bob Gainey'},{y:2002,n:'Doug Armstrong'},{y:2009,n:'Joe Nieuwendyk'},{y:2013,n:'Jim Nill'}],
+    milestones: [
+      {y:1993,type:'move',title:'North Stars Relocate to Dallas',desc:'Minnesota loses its team. Dallas gains a franchise that wins a Cup six years later.'},
+      {y:1999,type:'cup',title:'First Stanley Cup',desc:'Brett Hull\'s controversial foot-in-the-crease goal clinches it. Hitchcock\'s system dominates.'},
+      {y:2020,type:'regime',title:'Pavelski-Hintz Core Emerges',desc:'Stars reach the bubble Cup Final. Lose to Tampa in 6. New contender window opens.'},
+      {y:2024,type:'regime',title:'Western Conference Finals Again',desc:'Oettinger, Hintz & Robertson establish Dallas as perennial West contender.'},
+    ]
+  },
+  'VGK': {
+    coaches: [{y:2017,n:'Gerard Gallant'},{y:2020,n:'Pete DeBoer'},{y:2022,n:'Bruce Cassidy'}],
+    gms: [{y:2017,n:'George McPhee'},{y:2022,n:'Kelly McCrimmon'}],
+    milestones: [
+      {y:2017,type:'regime',title:'Expansion Draft Masterstroke',desc:'McPhee exploits the expansion draft rules better than anyone expected. Instant contender.'},
+      {y:2018,type:'regime',title:'Cup Final in Year One',desc:'Miraculous run to the Final in franchise\'s first season — most successful expansion debut ever.'},
+      {y:2023,type:'cup',title:'Stanley Cup Champions',desc:'Marchessault wins Conn Smythe. Adin Hill steps up after Lehner injury. The goal achieved.'},
+    ]
+  },
+  'CGY': {
+    coaches: [{y:1990,n:'Doug Risebrough'},{y:1991,n:'Guy Charron'},{y:1992,n:'Dave King'},{y:1995,n:'Pierre Page'},{y:1997,n:'Brian Sutter'},{y:2000,n:'Don Hay'},{y:2003,n:'Darryl Sutter'},{y:2006,n:'Jim Playfair'},{y:2007,n:'Mike Keenan'},{y:2009,n:'Brent Sutter'},{y:2012,n:'Bob Hartley'},{y:2016,n:'Glen Gulutzan'},{y:2018,n:'Bill Peters'},{y:2019,n:'Geoff Ward'},{y:2020,n:'Darryl Sutter'},{y:2022,n:'Darryl Sutter'},{y:2023,n:'Ryan Huska'}],
+    gms: [{y:1990,n:'Doug Risebrough'},{y:1995,n:'Al Coates'},{y:2003,n:'Darryl Sutter'},{y:2010,n:'Jay Feaster'},{y:2014,n:'Brad Treliving'},{y:2023,n:'Craig Conroy'}],
+    milestones: [
+      {y:2004,type:'regime',title:'Iginla\'s Cup Final Run',desc:'Jarome Iginla leads Flames to Game 7 of the Final. Kiprusoff unbeatable. Lost to Tampa.'},
+      {y:2019,type:'regime',title:'Gaudreau-Monahan Core Peaks',desc:'Presidents\' Trophy winners — lose in first round again. The "Battle of Alberta" heats up.'},
+      {y:2022,type:'trade',title:'Huberdeau & Weegar Arrive',desc:'Tkachuk traded. Blockbuster haul includes Huberdeau and MacKenzie Weegar. New era begins.'},
+    ]
+  },
+  'MIN': {
+    coaches: [{y:2000,n:'Jacques Lemaire'},{y:2009,n:'Todd Richards'},{y:2011,n:'Mike Yeo'},{y:2016,n:'Bruce Boudreau'},{y:2020,n:'Dean Evason'},{y:2022,n:'Dean Evason'},{y:2023,n:'John Hynes'}],
+    gms: [{y:2000,n:'Doug Risebrough'},{y:2009,n:'Chuck Fletcher'},{y:2012,n:'Chuck Fletcher'},{y:2018,n:'Paul Fenton'},{y:2019,n:'Bill Guerin'}],
+    milestones: [
+      {y:2000,type:'regime',title:'Wild Enter the League',desc:'Minnesota returns hockey after the North Stars left. Lemaire\'s trap immediately makes them competitive.'},
+      {y:2013,type:'trade',title:'Zach Parise & Ryan Suter',desc:'Both signed on the same day in 2012 — largest day-one UFA commitment in NHL history.'},
+      {y:2021,type:'draft',title:'Kirill Kaprizov Arrives',desc:'Russian star finally makes it to the NHL after years in the KHL. Wins Calder Trophy instantly.'},
+    ]
+  },
+  'NSH': {
+    coaches: [{y:1998,n:'Barry Trotz'},{y:2014,n:'Peter Laviolette'},{y:2018,n:'Peter Laviolette'},{y:2020,n:'John Hynes'}],
+    gms: [{y:1998,n:'David Poile'}],
+    milestones: [
+      {y:1998,type:'regime',title:'Expansion Franchise Debuts',desc:'Barry Trotz coaches from day one. Defensive identity established immediately.'},
+      {y:2017,type:'regime',title:'P.K. Subban Trade Pays Off',desc:'Predators reach the Stanley Cup Final — lose to Pittsburgh. Weber-Subban trade vindicated.'},
+      {y:2022,type:'trade',title:'Roman Josi Era Continues',desc:'Captain Josi remains one of the elite defencemen in the league despite aging roster around him.'},
+    ]
+  },
+  'OTT': {
+    coaches: [{y:1992,n:'Rick Bowness'},{y:1996,n:'Dave Allison'},{y:1997,n:'Jacques Martin'},{y:2004,n:'Bryan Murray'},{y:2008,n:'John Paddock'},{y:2008,n:'Craig Hartsburg'},{y:2009,n:'Cory Clouston'},{y:2011,n:'Paul MacLean'},{y:2014,n:'Dave Cameron'},{y:2016,n:'Guy Boucher'},{y:2019,n:'Marc Crawford'},{y:2020,n:'D.J. Smith'}],
+    gms: [{y:1992,n:'Mel Bridgman'},{y:1995,n:'Randy Sexton'},{y:1996,n:'Pierre Gauthier'},{y:1999,n:'Marshall Johnston'},{y:2002,n:'John Muckler'},{y:2007,n:'Bryan Murray'},{y:2016,n:'Pierre Dorion'}],
+    milestones: [
+      {y:1992,type:'regime',title:'Expansion Senators Debut',desc:'Modern Ottawa Senators born — first years are historically bad. Draft picks accumulate.'},
+      {y:2003,type:'regime',title:'Alfredsson Era at Its Peak',desc:'Sens reach the Conference Final. Daniel Alfredsson becomes the face of the franchise for 17 years.'},
+      {y:2007,type:'regime',title:'Stanley Cup Final',desc:'Ottawa\'s only Cup Final appearance. Lost to Anaheim in 5. Alfredsson at his peak.'},
+      {y:2022,type:'draft',title:'Brady Tkachuk Leads Rebuild',desc:'Tkachuk signs long-term as franchise cornerstone. Tim Stützle also emerges as a star.'},
+    ]
+  },
+  'BUF': {
+    coaches: [{y:1990,n:'Rick Dudley'},{y:1992,n:'John Muckler'},{y:1995,n:'Ted Nolan'},{y:1997,n:'Lindy Ruff'},{y:2013,n:'Ron Rolston'},{y:2014,n:'Ted Nolan'},{y:2015,n:'Dan Bylsma'},{y:2017,n:'Phil Housley'},{y:2019,n:'Ralph Krueger'},{y:2021,n:'Don Granato'}],
+    gms: [{y:1990,n:'Gerry Meehan'},{y:1993,n:'John Muckler'},{y:1997,n:'Darcy Regier'},{y:2013,n:'Tim Murray'},{y:2017,n:'Jason Botterill'},{y:2020,n:'Kevyn Adams'}],
+    milestones: [
+      {y:1999,type:'regime',title:'Hull\'s No-Goal & Cup Final',desc:'Sabres lose in controversial fashion. Brett Hull\'s foot-in-the-crease goal goes uncalled. Haunts Buffalo to this day.'},
+      {y:2013,type:'regime',title:'The Tank Begins',desc:'Sabres deliberately bottom out for draft picks. Multi-year rebuild strategy begins.'},
+      {y:2015,type:'draft',title:'Jack Eichel 2nd Overall',desc:'Dominant centre arrives. Years of drama follow before he demands a trade in 2021.'},
+      {y:2021,type:'trade',title:'Eichel Traded to Vegas',desc:'Dramatic saga ends. Tage Thompson emerges as unexpected franchise star in his absence.'},
+    ]
+  },
+  'NYI': {
+    coaches: [{y:1990,n:'Al Arbour'},{y:1994,n:'Lorne Henning'},{y:1995,n:'Mike Milbury'},{y:1996,n:'Rick Bowness'},{y:2000,n:'Butch Goring'},{y:2001,n:'Peter Laviolette'},{y:2003,n:'Steve Stirling'},{y:2006,n:'Brad Shaw'},{y:2007,n:'Ted Nolan'},{y:2008,n:'Scott Gordon'},{y:2012,n:'Jack Capuano'},{y:2017,n:'Doug Weight'},{y:2018,n:'Barry Trotz'}],
+    gms: [{y:1990,n:'Bill Torrey'},{y:1992,n:'Don Maloney'},{y:1995,n:'Mike Milbury'},{y:2006,n:'Neil Smith'},{y:2006,n:'Garth Snow'},{y:2018,n:'Lou Lamoriello'}],
+    milestones: [
+      {y:1993,type:'regime',title:'Al Arbour\'s Final Years',desc:'Dynasty coach\'s last run. Islanders reach the Conference Final — then fade into irrelevance.'},
+      {y:2000,type:'regime',title:'Milbury\'s Rebuilding Disasters',desc:'Years of bad trades — including trading Roberto Luongo — set franchise back a decade.'},
+      {y:2018,type:'regime',title:'Trotz & Lamoriello Transform Culture',desc:'From laughingstock to legitimate contenders in two years. Defensive identity restored.'},
+      {y:2021,type:'regime',title:'Back-to-Back Semis',desc:'Islanders reach Conference Finals in back-to-back years. Varlamov heroic. UBS Arena era begins.'},
+    ]
+  },
+  'PHI': {
+    coaches: [{y:1990,n:'Paul Holmgren'},{y:1992,n:'Bill Dineen'},{y:1993,n:'Terry Simpson'},{y:1994,n:'Terry Murray'},{y:1997,n:'Wayne Cashman'},{y:1997,n:'Roger Neilson'},{y:2000,n:'Craig Ramsay'},{y:2000,n:'Bill Barber'},{y:2002,n:'Ken Hitchcock'},{y:2006,n:'John Stevens'},{y:2009,n:'Peter Laviolette'},{y:2013,n:'Craig Berube'},{y:2015,n:'Dave Hakstol'},{y:2019,n:'Alain Vigneault'},{y:2021,n:'Mike Yeo'},{y:2022,n:'John Tortorella'}],
+    gms: [{y:1990,n:'Russ Farwell'},{y:1994,n:'Bob Clarke'},{y:2006,n:'Paul Holmgren'},{y:2014,n:'Ron Hextall'},{y:2019,n:'Chuck Fletcher'},{y:2023,n:'Danny Briere'}],
+    milestones: [
+      {y:1997,type:'regime',title:'Legion of Doom Era Ends',desc:'Lindros, LeClair & Renberg — one of the greatest lines ever assembled — begins breaking apart.'},
+      {y:2000,type:'regime',title:'Hitchcock Rebuilds Identity',desc:'Defensive systems implemented. Flyers become contenders again briefly around 2004.'},
+      {y:2010,type:'regime',title:'Laviolette\'s Cup Final Run',desc:'Flyers reach the Final — lose to Chicago. Leighton and Richards lead a memorable run.'},
+      {y:2022,type:'regime',title:'Tortorella Accountability Era',desc:'Notoriously demanding coach hired to rebuild culture. Matvei Michkov drafted 7th overall in 2023.'},
+    ]
+  },
+  'CAR': {
+    coaches: [{y:1997,n:'Paul Maurice'},{y:2003,n:'Peter Laviolette'},{y:2003,n:'Peter Laviolette'},{y:2008,n:'Paul Maurice'},{y:2011,n:'Kirk Muller'},{y:2012,n:'Bill Peters'},{y:2018,n:'Rod Brind\'Amour'}],
+    gms: [{y:1997,n:'Jim Rutherford'},{y:2014,n:'Ron Francis'},{y:2018,n:'Don Waddell'}],
+    milestones: [
+      {y:1997,type:'move',title:'Whalers Relocate to Carolina',desc:'Hartford loses its NHL team. Carolina gains a franchise that wins a Cup 9 years later.'},
+      {y:2006,type:'cup',title:'Stanley Cup Champions',desc:'Rod Brind\'Amour & Cam Ward lead the Hurricanes to their only championship.'},
+      {y:2018,type:'regime',title:'Brind\'Amour Returns as Coach',desc:'Greatest Hurricane as a player becomes the coach. Squad immediately becomes a contender.'},
+      {y:2019,type:'regime',title:'The "Bunch of Jerks" Era',desc:'Svechnikov, Aho & Teravainen emerge. Caroline becomes the most exciting young team in the league.'},
+    ]
+  },
+  'CBJ': {
+    coaches: [{y:2000,n:'Dave King'},{y:2004,n:'Gerard Gallant'},{y:2005,n:'Gerard Gallant'},{y:2007,n:'Claude Noel'},{y:2012,n:'Todd Richards'},{y:2015,n:'John Tortorella'},{y:2017,n:'John Tortorella'},{y:2021,n:'Brad Larsen'}],
+    gms: [{y:2000,n:'Doug MacLean'},{y:2007,n:'Scott Howson'},{y:2013,n:'Jarmo Kekalainen'}],
+    milestones: [
+      {y:2000,type:'regime',title:'Expansion Blue Jackets Debut',desc:'Columbus joins the NHL. Slow early years as organization builds from scratch.'},
+      {y:2019,type:'regime',title:'4-0 Sweep of Tampa Bay',desc:'Biggest playoff upset in modern NHL history — swept the Presidents\' Trophy Tampa team in Round 1.'},
+      {y:2021,type:'trade',title:'Rebuild Around Gaudreau',desc:'Johnny Gaudreau shocks NHL by signing with Columbus as UFA. Surprising hometown-ish choice.'},
+    ]
+  },
+  'WPG': {
+    coaches: [{y:2011,n:'Claude Noel'},{y:2014,n:'Paul Maurice'},{y:2023,n:'Rick Bowness'},{y:2024,n:'Scott Arniel'}],
+    gms: [{y:2011,n:'Kevin Cheveldayoff'}],
+    milestones: [
+      {y:2011,type:'move',title:'Atlanta Thrashers Relocate',desc:'Jets return to Winnipeg after 15 years. City embraces team with record-breaking enthusiasm.'},
+      {y:2018,type:'regime',title:'Western Conference Finals',desc:'Laine, Wheeler & Scheifele lead Jets to the West Final — lose to Vegas.'},
+      {y:2023,type:'draft',title:'Connor Hellebuyck Dominates',desc:'Hellebuyck wins the Vezina for a second time. Quietly one of the best goalies of his generation.'},
+    ]
+  },
+  'SJS': {
+    coaches: [{y:1991,n:'George Kingston'},{y:1993,n:'Kevin Constantine'},{y:1995,n:'Jim Wiley'},{y:1996,n:'Al Sims'},{y:1997,n:'Darryl Sutter'},{y:2002,n:'Ron Wilson'},{y:2008,n:'Todd McLellan'},{y:2015,n:'Pete DeBoer'},{y:2016,n:'Peter DeBoer'},{y:2020,n:'Bob Boughner'},{y:2022,n:'David Quinn'}],
+    gms: [{y:1991,n:'Jack Ferreira'},{y:1996,n:'Dean Lombardi'},{y:2003,n:'Doug Wilson'},{y:2022,n:'Mike Grier'}],
+    milestones: [
+      {y:1994,type:'regime',title:'First Playoff Appearance',desc:'Just third year of existence. Kevin Constantine builds a competitive team remarkably fast.'},
+      {y:2004,type:'trade',title:'Joe Thornton Trade',desc:'Massive: Thornton comes from Boston in a blockbuster. Immediately wins the Hart Trophy.'},
+      {y:2016,type:'regime',title:'Historic Comeback to Cup Final',desc:'Down 3-1 to both LA and Pittsburgh — come back. Lose Cup Final to Pittsburgh in 6.'},
+      {y:2019,type:'regime',title:'Another Historic Collapse',desc:'Up 3-1 on Vegas — lose in 7. Series of heartbreaks define the Marleau-Thornton era end.'},
+    ]
+  },
+  'ANA': {
+    coaches: [{y:1993,n:'Ron Wilson'},{y:1997,n:'Pierre Page'},{y:1998,n:'Craig Hartsburg'},{y:2000,n:'Guy Charron'},{y:2002,n:'Mike Babcock'},{y:2005,n:'Randy Carlyle'},{y:2011,n:'Bruce Boudreau'},{y:2016,n:'Randy Carlyle'},{y:2019,n:'Dallas Eakins'}],
+    gms: [{y:1993,n:'Jack Ferreira'},{y:1998,n:'Pierre Gauthier'},{y:2002,n:'Bryan Murray'},{y:2008,n:'Bob Murray'},{y:2021,n:'Pat Verbeek'}],
+    milestones: [
+      {y:1993,type:'regime',title:'Mighty Ducks Born',desc:'Disney creates the franchise. Named after the movie — becomes one of the most recognizable brands.'},
+      {y:2003,type:'regime',title:'Babcock Era Begins',desc:'Babcock immediately transforms Ducks into contenders. Selanne, Niederma yer & Pronger assembled.'},
+      {y:2007,type:'cup',title:'Stanley Cup Champions',desc:'Giguère, Pronger & Selanne win it all. Carlyle\'s Ducks are the class of the West.'},
+      {y:2014,type:'regime',title:'Getzlaf-Perry Prime Years',desc:'Back-to-back Pacific Division titles. Constant contender but repeated early exits frustrate.'},
+    ]
+  },
+  'LAK': {
+    coaches: [{y:1990,n:'Tom Webster'},{y:1992,n:'Barry Melrose'},{y:1995,n:'Larry Robinson'},{y:1996,n:'Larry Robinson'},{y:1999,n:'Andy Murray'},{y:2006,n:'Marc Crawford'},{y:2008,n:'Terry Murray'},{y:2011,n:'Darryl Sutter'},{y:2017,n:'John Stevens'},{y:2019,n:'Todd McLellan'},{y:2022,n:'Todd McLellan'}],
+    gms: [{y:1990,n:'Rogie Vachon'},{y:1992,n:'Nick Beverley'},{y:1994,n:'Sam McMaster'},{y:1996,n:'Dave Taylor'},{y:2006,n:'Dean Lombardi'},{y:2020,n:'Rob Blake'}],
+    milestones: [
+      {y:1993,type:'regime',title:'Gretzky\'s Final Kings Run',desc:'Gretzky leads LA to the Cup Final — lose to Montreal. His last great playoff run.'},
+      {y:2012,type:'cup',title:'8th-Seed Cup Champions',desc:'Lowest seed ever to win the Cup. Quick wins Conn Smythe. Carter-Richards trade justified.'},
+      {y:2014,type:'cup',title:'Back-to-Back',desc:'Doughty, Quick & Kopitar repeat. One of the most defensively dominant teams ever assembled.'},
+      {y:2021,type:'regime',title:'Rebuild Around Kempe & Kopitar',desc:'Young core of Byfield, Turcotte & Anderson emerges around aging-but-effective Kopitar.'},
+    ]
+  },
+  'UTA': {
+    coaches: [{y:2024,n:'André Tourigny'}],
+    gms: [{y:2024,n:'Bill Armstrong'}],
+    milestones: [
+      {y:2024,type:'move',title:'Coyotes Relocate to Utah',desc:'After years of arena struggles in Arizona, the franchise relocates to Salt Lake City as Utah HC.'},
+      {y:2024,type:'regime',title:'Year One in the Desert Ends, Year One in Utah Begins',desc:'Roster largely kept intact. Clayton Keller leads the new club into its inaugural season.'},
+    ]
+  },
+  'SEA': {
+    coaches: [{y:2021,n:'Dave Hakstol'}],
+    gms: [{y:2021,n:'Ron Francis'}],
+    milestones: [
+      {y:2021,type:'regime',title:'Kraken Expansion Debut',desc:'32nd franchise enters the league with Ron Francis as GM and Dave Hakstol as coach.'},
+      {y:2023,type:'regime',title:'Second-Year Playoffs',desc:'Matty Beniers wins Calder. Kraken reach Round 2 in just their second season — ahead of schedule.'},
+    ]
+  },
+};
+
+// Default data for teams without explicit entries
+function getDefaultFranchiseData(team) {
+  return {
+    coaches: [],
+    gms: [],
+    milestones: [{ y: team.founded, type: 'regime', title: `${team.name} Founded`, desc: `Franchise established in ${team.founded}.` }]
+  };
+}
+
+// ── RENDER REGIME TIMELINE ─────────────────────────────────────────────────────
+function renderRegimeTimeline(team) {
+  const container = document.getElementById('regime-timeline');
+  const fd = FRANCHISE_DATA[team.id] || getDefaultFranchiseData(team);
+  const startYear = Math.max(1990, team.founded);
+  const endYear = 2024;
+  const span = endYear - startYear;
+
+  if (fd.coaches.length === 0 && fd.gms.length === 0) {
+    container.innerHTML = '';
+    return;
+  }
+
+  const pct = (y) => ((Math.max(y, startYear) - startYear) / span * 100).toFixed(2) + '%';
+  const wid = (s, e) => ((Math.min(e, endYear) - Math.max(s, startYear)) / span * 100).toFixed(2) + '%';
+
+  const rows = [
+    { label: 'COACH', items: fd.coaches, color: team.color === '#000000' || team.color === '#111111' ? '#4a6fa5' : team.color },
+    { label: 'GM', items: fd.gms, color: '#4b5563' },
+  ];
+
+  let html = `<div class="section-label">Regime Timeline</div><div class="timeline-track">`;
+
+  rows.forEach(row => {
+    if (!row.items || row.items.length === 0) return;
+    html += `<div class="timeline-row"><div class="timeline-row-label">${row.label}</div><div class="timeline-bars">`;
+
+    row.items.forEach((item, i) => {
+      const nextY = row.items[i + 1]?.y ?? (endYear + 1);
+      const startY = Math.max(item.y, startYear);
+      const endY = Math.min(nextY, endYear + 1);
+      if (endY <= startYear) return;
+      const left = pct(startY);
+      const width = wid(startY, endY);
+      const years = endY - startY;
+      const label = years >= 3 ? item.n : (years >= 2 ? item.n.split(' ').pop() : '');
+      const alpha = Math.max(0.25, Math.min(1, 0.4 + i * 0.07));
+
+      html += `<div class="regime-bar" style="left:${left};width:calc(${width} - 2px);background:${row.color};opacity:${alpha};" title="${item.n} (${item.y}–${nextY > 2024 ? 'present' : nextY})">`;
+      if (label) html += `<span class="regime-bar-text">${label}</span>`;
+      html += `</div>`;
+    });
+
+    html += `</div></div>`;
+  });
+
+  // Year axis
+  html += `<div style="display:flex;position:relative;height:16px;margin-left:52px;border-top:1px solid #1f2937;margin-top:4px;">`;
+  const tickYears = d3.range(startYear % 5 === 0 ? startYear : startYear + (5 - startYear % 5), endYear + 1, 5);
+  tickYears.forEach(yr => {
+    html += `<span style="position:absolute;left:${pct(yr)};font-family:'Share Tech Mono',monospace;font-size:9px;color:#4b5563;transform:translateX(-50%)">${yr}</span>`;
+  });
+  html += `</div></div>`;
+
+  container.innerHTML = html;
+}
+
+// ── RENDER MILESTONES ──────────────────────────────────────────────────────────
+function renderMilestones(team) {
+  const container = document.getElementById('milestones-section');
+  const fd = FRANCHISE_DATA[team.id] || getDefaultFranchiseData(team);
+
+  if (!fd.milestones || fd.milestones.length === 0) {
+    container.innerHTML = '';
+    return;
+  }
+
+  const typeLabels = { cup:'Stanley Cup', trade:'Trade', draft:'Draft', arena:'Arena', regime:'Regime', rebrand:'Rebrand', move:'Relocation' };
+
+  let html = `<div class="section-label">Franchise Milestones</div><div class="milestones-grid">`;
+
+  fd.milestones.sort((a,b) => a.y - b.y).forEach(m => {
+    html += `
+      <div class="milestone-card" data-type="${m.type}">
+        <div class="milestone-year">${m.y}</div>
+        <div class="milestone-title">${m.title}</div>
+        <div class="milestone-desc">${m.desc}</div>
+        <div class="milestone-tag">${typeLabels[m.type] || m.type}</div>
+      </div>`;
+  });
+
+  html += `</div>`;
+  container.innerHTML = html;
+}
+
 // ── CHART ──────────────────────────────────────────────────────────────────────
 function updateChart() {
   const data = getTeamData(selectedTeam);
@@ -945,6 +1747,9 @@ function updateChart() {
   `;
 
   drawChart(data, mc, team);
+  renderReportCard(data, team);
+  renderRegimeTimeline(team);
+  renderMilestones(team);
 }
 
 function drawChart(data, mc, team) {
