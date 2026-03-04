@@ -623,38 +623,38 @@
 // Seasons 1990–2024 (selected years shown for conciseness, interpolated for full curve)
 
 const TEAMS = [
-  { id: 'TOR', name: 'Toronto Maple Leafs', city: 'Toronto', color: '#003E7E', color2: '#FFFFFF', division: 'Atlantic', founded: 1917, arena: 'Scotiabank Arena', cups: [1967] },
-  { id: 'MTL', name: 'Montréal Canadiens', city: 'Montréal', color: '#AF1E2D', color2: '#192168', division: 'Atlantic', founded: 1909, arena: 'Bell Centre', cups: [1993] },
-  { id: 'BOS', name: 'Boston Bruins', city: 'Boston', color: '#FCB514', color2: '#000000', division: 'Atlantic', founded: 1924, arena: 'TD Garden', cups: [2011] },
-  { id: 'BUF', name: 'Buffalo Sabres', city: 'Buffalo', color: '#003087', color2: '#FCB514', division: 'Atlantic', founded: 1970, arena: 'KeyBank Center', cups: [] },
-  { id: 'FLA', name: 'Florida Panthers', city: 'Sunrise', color: '#041E42', color2: '#C8102E', division: 'Atlantic', founded: 1993, arena: 'Amerant Bank Arena', cups: [2024] },
-  { id: 'TBL', name: 'Tampa Bay Lightning', city: 'Tampa Bay', color: '#002868', color2: '#FFFFFF', division: 'Atlantic', founded: 1992, arena: 'Amalie Arena', cups: [2020, 2021] },
-  { id: 'DET', name: 'Detroit Red Wings', city: 'Detroit', color: '#CE1126', color2: '#FFFFFF', division: 'Atlantic', founded: 1926, arena: 'Little Caesars Arena', cups: [1997, 1998, 2002, 2008] },
-  { id: 'OTT', name: 'Ottawa Senators', city: 'Ottawa', color: '#C2912C', color2: '#000000', division: 'Atlantic', founded: 1992, arena: 'Canadian Tire Centre', cups: [] },
-  { id: 'NYR', name: 'New York Rangers', city: 'New York', color: '#0038A8', color2: '#CE1126', division: 'Metropolitan', founded: 1926, arena: 'Madison Square Garden', cups: [1994] },
-  { id: 'NYI', name: 'New York Islanders', city: 'Elmont', color: '#003087', color2: '#FC4C02', division: 'Metropolitan', founded: 1972, arena: 'UBS Arena', cups: [] },
-  { id: 'NJD', name: 'New Jersey Devils', city: 'Newark', color: '#CE1126', color2: '#000000', division: 'Metropolitan', founded: 1982, arena: 'Prudential Center', cups: [2000, 2003] },
-  { id: 'PHI', name: 'Philadelphia Flyers', city: 'Philadelphia', color: '#F74902', color2: '#000000', division: 'Metropolitan', founded: 1967, arena: 'Wells Fargo Center', cups: [] },
-  { id: 'WSH', name: 'Washington Capitals', city: 'Washington', color: '#041E42', color2: '#C8102E', division: 'Metropolitan', founded: 1974, arena: 'Capital One Arena', cups: [2018] },
-  { id: 'PIT', name: 'Pittsburgh Penguins', city: 'Pittsburgh', color: '#FCB514', color2: '#000000', division: 'Metropolitan', founded: 1967, arena: 'PPG Paints Arena', cups: [1991, 1992, 2009, 2016, 2017] },
-  { id: 'CAR', name: 'Carolina Hurricanes', city: 'Raleigh', color: '#CC0000', color2: '#000000', division: 'Metropolitan', founded: 1997, arena: 'PNC Arena', cups: [2006] },
-  { id: 'CBJ', name: 'Columbus Blue Jackets', city: 'Columbus', color: '#002654', color2: '#CE1126', division: 'Metropolitan', founded: 2000, arena: 'Nationwide Arena', cups: [] },
-  { id: 'CHI', name: 'Chicago Blackhawks', city: 'Chicago', color: '#CF0A2C', color2: '#000000', division: 'Central', founded: 1926, arena: 'United Center', cups: [2010, 2013, 2015] },
-  { id: 'NSH', name: 'Nashville Predators', city: 'Nashville', color: '#FFB81C', color2: '#041E42', division: 'Central', founded: 1998, arena: 'Bridgestone Arena', cups: [] },
-  { id: 'STL', name: 'St. Louis Blues', city: 'St. Louis', color: '#002F87', color2: '#FCB514', division: 'Central', founded: 1967, arena: 'Enterprise Center', cups: [2019] },
-  { id: 'MIN', name: 'Minnesota Wild', city: 'St. Paul', color: '#154734', color2: '#A6192E', division: 'Central', founded: 2000, arena: 'Xcel Energy Center', cups: [] },
-  { id: 'WPG', name: 'Winnipeg Jets', city: 'Winnipeg', color: '#041E42', color2: '#AC162C', division: 'Central', founded: 2011, arena: 'Canada Life Centre', cups: [] },
-  { id: 'COL', name: 'Colorado Avalanche', city: 'Denver', color: '#6F263D', color2: '#236192', division: 'Central', founded: 1995, arena: 'Ball Arena', cups: [1996, 2001, 2022] },
-  { id: 'DAL', name: 'Dallas Stars', city: 'Dallas', color: '#006847', color2: '#8F8F8C', division: 'Central', founded: 1993, arena: 'American Airlines Center', cups: [1999] },
-  { id: 'ARI', name: 'Arizona Coyotes', city: 'Phoenix', color: '#8C2633', color2: '#E2D6B5', division: 'Central', founded: 1996, arena: 'Mullett Arena', cups: [] },
-  { id: 'VGK', name: 'Vegas Golden Knights', city: 'Las Vegas', color: '#B4975A', color2: '#333F42', division: 'Pacific', founded: 2017, arena: 'T-Mobile Arena', cups: [2023] },
-  { id: 'SEA', name: 'Seattle Kraken', city: 'Seattle', color: '#001628', color2: '#99D9D9', division: 'Pacific', founded: 2021, arena: 'Climate Pledge Arena', cups: [] },
-  { id: 'VAN', name: 'Vancouver Canucks', city: 'Vancouver', color: '#00205B', color2: '#00843D', division: 'Pacific', founded: 1970, arena: 'Rogers Arena', cups: [] },
-  { id: 'CGY', name: 'Calgary Flames', city: 'Calgary', color: '#C8102E', color2: '#F1BE48', division: 'Pacific', founded: 1980, arena: 'Scotiabank Saddledome', cups: [1989] },
-  { id: 'EDM', name: 'Edmonton Oilers', city: 'Edmonton', color: '#041E42', color2: '#FC4C02', division: 'Pacific', founded: 1979, arena: 'Rogers Place', cups: [1984, 1985, 1987, 1988, 1990] },
-  { id: 'LAK', name: 'Los Angeles Kings', city: 'Los Angeles', color: '#111111', color2: '#A2AAAD', division: 'Pacific', founded: 1967, arena: 'Crypto.com Arena', cups: [2012, 2014] },
-  { id: 'SJS', name: 'San Jose Sharks', city: 'San Jose', color: '#006D75', color2: '#EA7200', division: 'Pacific', founded: 1991, arena: 'SAP Center', cups: [] },
-  { id: 'ANA', name: 'Anaheim Ducks', city: 'Anaheim', color: '#F47A38', color2: '#B9975B', division: 'Pacific', founded: 1993, arena: 'Honda Center', cups: [2007] },
+  { id: 'TOR', name: 'Toronto Maple Leafs', city: 'Toronto', color: '#003E7E', color2: '#FFFFFF', division: 'Atlantic', founded: 1917, arena: 'Scotiabank Arena', cups: [1967], allCups: 13 },
+  { id: 'MTL', name: 'Montréal Canadiens', city: 'Montréal', color: '#AF1E2D', color2: '#192168', division: 'Atlantic', founded: 1909, arena: 'Bell Centre', cups: [1993], allCups: 24 },
+  { id: 'BOS', name: 'Boston Bruins', city: 'Boston', color: '#FCB514', color2: '#000000', division: 'Atlantic', founded: 1924, arena: 'TD Garden', cups: [2011], allCups: 6 },
+  { id: 'BUF', name: 'Buffalo Sabres', city: 'Buffalo', color: '#003087', color2: '#FCB514', division: 'Atlantic', founded: 1970, arena: 'KeyBank Center', cups: [], allCups: 0 },
+  { id: 'FLA', name: 'Florida Panthers', city: 'Sunrise', color: '#C8102E', color2: '#041E42', division: 'Atlantic', founded: 1993, arena: 'Amerant Bank Arena', cups: [2024], allCups: 1 },
+  { id: 'TBL', name: 'Tampa Bay Lightning', city: 'Tampa Bay', color: '#002868', color2: '#FFFFFF', division: 'Atlantic', founded: 1992, arena: 'Amalie Arena', cups: [2004, 2020, 2021], allCups: 3 },
+  { id: 'DET', name: 'Detroit Red Wings', city: 'Detroit', color: '#CE1126', color2: '#FFFFFF', division: 'Atlantic', founded: 1926, arena: 'Little Caesars Arena', cups: [1997, 1998, 2002, 2008], allCups: 11 },
+  { id: 'OTT', name: 'Ottawa Senators', city: 'Ottawa', color: '#C2912C', color2: '#000000', division: 'Atlantic', founded: 1992, arena: 'Canadian Tire Centre', cups: [], allCups: 0 },
+  { id: 'NYR', name: 'New York Rangers', city: 'New York', color: '#0038A8', color2: '#CE1126', division: 'Metropolitan', founded: 1926, arena: 'Madison Square Garden', cups: [1994], allCups: 4 },
+  { id: 'NYI', name: 'New York Islanders', city: 'Elmont', color: '#003087', color2: '#FC4C02', division: 'Metropolitan', founded: 1972, arena: 'UBS Arena', cups: [], allCups: 4 },
+  { id: 'NJD', name: 'New Jersey Devils', city: 'Newark', color: '#CE1126', color2: '#000000', division: 'Metropolitan', founded: 1982, arena: 'Prudential Center', cups: [1995, 2000, 2003], allCups: 3 },
+  { id: 'PHI', name: 'Philadelphia Flyers', city: 'Philadelphia', color: '#F74902', color2: '#000000', division: 'Metropolitan', founded: 1967, arena: 'Wells Fargo Center', cups: [], allCups: 2 },
+  { id: 'WSH', name: 'Washington Capitals', city: 'Washington', color: '#041E42', color2: '#C8102E', division: 'Metropolitan', founded: 1974, arena: 'Capital One Arena', cups: [2018], allCups: 1 },
+  { id: 'PIT', name: 'Pittsburgh Penguins', city: 'Pittsburgh', color: '#FCB514', color2: '#000000', division: 'Metropolitan', founded: 1967, arena: 'PPG Paints Arena', cups: [1991, 1992, 2009, 2016, 2017], allCups: 5 },
+  { id: 'CAR', name: 'Carolina Hurricanes', city: 'Raleigh', color: '#CC0000', color2: '#000000', division: 'Metropolitan', founded: 1997, arena: 'PNC Arena', cups: [2006], allCups: 2 },
+  { id: 'CBJ', name: 'Columbus Blue Jackets', city: 'Columbus', color: '#002654', color2: '#CE1126', division: 'Metropolitan', founded: 2000, arena: 'Nationwide Arena', cups: [], allCups: 0 },
+  { id: 'CHI', name: 'Chicago Blackhawks', city: 'Chicago', color: '#CF0A2C', color2: '#000000', division: 'Central', founded: 1926, arena: 'United Center', cups: [2010, 2013, 2015], allCups: 6 },
+  { id: 'NSH', name: 'Nashville Predators', city: 'Nashville', color: '#FFB81C', color2: '#041E42', division: 'Central', founded: 1998, arena: 'Bridgestone Arena', cups: [], allCups: 0 },
+  { id: 'STL', name: 'St. Louis Blues', city: 'St. Louis', color: '#002F87', color2: '#FCB514', division: 'Central', founded: 1967, arena: 'Enterprise Center', cups: [2019], allCups: 1 },
+  { id: 'MIN', name: 'Minnesota Wild', city: 'St. Paul', color: '#154734', color2: '#A6192E', division: 'Central', founded: 2000, arena: 'Xcel Energy Center', cups: [], allCups: 0 },
+  { id: 'WPG', name: 'Winnipeg Jets', city: 'Winnipeg', color: '#041E42', color2: '#AC162C', division: 'Central', founded: 2011, arena: 'Canada Life Centre', cups: [], allCups: 0 },
+  { id: 'COL', name: 'Colorado Avalanche', city: 'Denver', color: '#6F263D', color2: '#236192', division: 'Central', founded: 1995, arena: 'Ball Arena', cups: [1996, 2001, 2022], allCups: 3 },
+  { id: 'DAL', name: 'Dallas Stars', city: 'Dallas', color: '#006847', color2: '#8F8F8C', division: 'Central', founded: 1993, arena: 'American Airlines Center', cups: [1999], allCups: 2 },
+  { id: 'UTA', name: 'Utah Hockey Club', city: 'Salt Lake City', color: '#6CAEDF', color2: '#010101', division: 'Central', founded: 2024, arena: 'Delta Center', cups: [], allCups: 0 },
+  { id: 'VGK', name: 'Vegas Golden Knights', city: 'Las Vegas', color: '#B4975A', color2: '#333F42', division: 'Pacific', founded: 2017, arena: 'T-Mobile Arena', cups: [2023], allCups: 1 },
+  { id: 'SEA', name: 'Seattle Kraken', city: 'Seattle', color: '#001628', color2: '#99D9D9', division: 'Pacific', founded: 2021, arena: 'Climate Pledge Arena', cups: [], allCups: 0 },
+  { id: 'VAN', name: 'Vancouver Canucks', city: 'Vancouver', color: '#00205B', color2: '#00843D', division: 'Pacific', founded: 1970, arena: 'Rogers Arena', cups: [], allCups: 0 },
+  { id: 'CGY', name: 'Calgary Flames', city: 'Calgary', color: '#C8102E', color2: '#F1BE48', division: 'Pacific', founded: 1980, arena: 'Scotiabank Saddledome', cups: [], allCups: 1 },
+  { id: 'EDM', name: 'Edmonton Oilers', city: 'Edmonton', color: '#FC4C02', color2: '#041E42', division: 'Pacific', founded: 1979, arena: 'Rogers Place', cups: [1990], allCups: 5 },
+  { id: 'LAK', name: 'Los Angeles Kings', city: 'Los Angeles', color: '#A2AAAD', color2: '#111111', division: 'Pacific', founded: 1967, arena: 'Crypto.com Arena', cups: [2012, 2014], allCups: 2 },
+  { id: 'SJS', name: 'San Jose Sharks', city: 'San Jose', color: '#006D75', color2: '#EA7200', division: 'Pacific', founded: 1991, arena: 'SAP Center', cups: [], allCups: 0 },
+  { id: 'ANA', name: 'Anaheim Ducks', city: 'Anaheim', color: '#F47A38', color2: '#B9975B', division: 'Pacific', founded: 1993, arena: 'Honda Center', cups: [2007], allCups: 1 },
 ];
 
 // Generate realistic historical data per team
@@ -679,7 +679,7 @@ function generateTeamData(team) {
     'DAL': { base: 0.54, peaks: [{yr:1999,val:0.68},{yr:2020,val:0.65}] },
     'EDM': { base: 0.50, peaks: [{yr:1990,val:0.68},{yr:1991,val:0.65},{yr:2022,val:0.63},{yr:2024,val:0.62}], valley: [2011,2012,2013,2014,2015], valleyVal: 0.37 },
     'CGY': { base: 0.50, peaks: [{yr:2004,val:0.62},{yr:2019,val:0.61}] },
-    'VGK': { base: 0.61, peaks: [{yr:2018,val:0.68},{yr:2023,val:0.66}] },
+    'UTA': { base: 0.50, peaks: [{yr:2024,val:0.54}] },
     'FLA': { base: 0.44, peaks: [{yr:1996,val:0.57},{yr:2022,val:0.66},{yr:2024,val:0.67}], growth: 2020 },
     'CAR': { base: 0.48, peaks: [{yr:2006,val:0.64},{yr:2019,val:0.64},{yr:2023,val:0.65}], growth: 2018 },
     'STL': { base: 0.52, peaks: [{yr:2000,val:0.63},{yr:2019,val:0.66}] },
@@ -767,6 +767,7 @@ const PLAYOFF_HISTORY = {
   'OTT': { 1992:0,1993:0,1994:0,1995:0,1996:0,1997:0,1998:1,1999:0,2000:0,2001:0,2002:1,2003:1,2004:1,2006:1,2007:1,2008:1,2009:0,2010:1,2011:0,2012:0,2013:1,2014:0,2015:0,2016:0,2017:1,2018:0,2019:0,2020:0,2021:0,2022:0,2023:0,2024:0 },
   'NYR': { 1990:1,1991:0,1992:1,1993:1,1994:1,1995:1,1996:1,1997:1,1998:0,1999:0,2000:0,2001:0,2002:0,2003:0,2004:0,2006:0,2007:1,2008:1,2009:1,2010:0,2011:1,2012:1,2013:1,2014:1,2015:1,2016:0,2017:0,2018:0,2019:0,2020:1,2021:0,2022:1,2023:1,2024:1 },
   'NYI': { 1990:1,1991:1,1992:1,1993:1,1994:1,1995:1,1996:0,1997:0,1998:0,1999:0,2000:0,2001:0,2002:1,2003:0,2004:0,2006:0,2007:0,2008:0,2009:0,2010:0,2011:0,2012:0,2013:0,2014:1,2015:1,2016:1,2017:0,2018:0,2019:1,2020:1,2021:1,2022:0,2023:0,2024:0 },
+  'UTA': { 2024:0 },
   'NJD': { 1990:1,1991:1,1992:1,1993:0,1994:1,1995:1,1996:1,1997:1,1998:1,1999:1,2000:1,2001:1,2002:1,2003:1,2004:0,2006:1,2007:1,2008:0,2009:0,2010:0,2011:0,2012:1,2013:0,2014:0,2015:0,2016:0,2017:0,2018:0,2019:0,2020:0,2021:0,2022:1,2023:1,2024:0 },
   'PHI': { 1990:1,1991:1,1992:1,1993:0,1994:1,1995:1,1996:1,1997:1,1998:0,1999:0,2000:1,2001:0,2002:0,2003:0,2004:1,2006:1,2007:1,2008:1,2009:1,2010:1,2011:1,2012:0,2013:0,2014:1,2015:0,2016:0,2017:0,2018:0,2019:0,2020:1,2021:0,2022:0,2023:0,2024:0 },
   'WSH': { 1990:1,1991:1,1992:1,1993:1,1994:1,1995:1,1996:1,1997:1,1998:1,1999:0,2000:0,2001:1,2002:0,2003:0,2004:0,2006:0,2007:1,2008:1,2009:1,2010:1,2011:1,2012:1,2013:1,2014:1,2015:1,2016:1,2017:1,2018:1,2019:1,2020:1,2021:1,2022:0,2023:1,2024:1 },
@@ -854,7 +855,7 @@ function buildSidebar() {
           <div class="team-name">${team.name.replace(team.city+' ','')}</div>
           <div class="team-city">${team.city}</div>
         </div>
-        ${team.cups.length ? `<div class="team-cups">🏆${team.cups.length > 1 ? '×'+team.cups.length : ''}</div>` : ''}
+        ${team.allCups > 0 ? `<div class="team-cups">🏆${team.allCups > 1 ? '×'+team.allCups : ''}</div>` : ''}
       `;
       item.addEventListener('click', () => selectTeam(team));
       list.appendChild(item);
@@ -909,7 +910,8 @@ function updateChart() {
   document.getElementById('franchise-name').style.color = team.color === '#000000' || team.color === '#111111' ? '#e2e8f0' : team.color;
   document.getElementById('franchise-sub').textContent =
     `FOUNDED ${team.founded} · ${team.arena}` +
-    (team.cups.length ? ` · 🏆 ${team.cups.join(', ')}` : '');
+    (team.allCups > 0 ? ` · 🏆 ×${team.allCups} ALL-TIME` : '') +
+    (team.cups.length ? ` (${team.cups.filter(y=>y>=1990).join(', ')} shown)` : '');
 
   // Stat pills
   const vals = data.map(d => d[selectedMetric]);
