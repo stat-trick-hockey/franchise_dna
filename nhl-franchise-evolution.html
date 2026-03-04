@@ -778,9 +778,129 @@
     pointer-events: none;
   }
 
+  /* ── MOBILE TEAM PICKER (hidden on desktop) ── */
+  .mobile-team-bar {
+    display: none;
+    padding: 8px 16px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    gap: 10px;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .mobile-team-label {
+    font-family: var(--cond);
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .mobile-team-select {
+    flex: 1;
+    background: var(--panel);
+    border: 1px solid var(--border-bright);
+    border-radius: 4px;
+    padding: 7px 10px;
+    color: var(--text);
+    font-family: var(--cond);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7280' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 28px;
+  }
+
+  .mobile-team-select option { background: var(--panel); color: var(--text); }
+
+  /* ── TABLET / SMALL DESKTOP ── */
   @media (max-width: 900px) {
     .app { grid-template-columns: 1fr; }
     .sidebar { display: none; }
+
+    .mobile-team-bar { display: flex; }
+
+    header { padding: 0 16px; height: 52px; }
+    .logo-text { font-size: 15px; }
+    .logo-sub { display: none; }
+    .live-indicator span { display: none; }
+
+    .control-bar {
+      padding: 10px 16px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .divider { display: none; }
+
+    .chart-area { padding: 16px 16px 10px; }
+
+    .chart-header { flex-direction: column; gap: 10px; }
+    .franchise-name { font-size: 30px; }
+    .franchise-founded { font-size: 11px; letter-spacing: 1px; }
+    .stat-pills { justify-content: flex-start; }
+
+    .bottom-panel { padding: 0 16px 24px; }
+
+    .report-card { grid-template-columns: repeat(2, 1fr); }
+
+    .regime-timeline { overflow-x: auto; }
+    .timeline-track { min-width: 480px; }
+
+    .milestones-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* ── MOBILE PHONE ── */
+  @media (max-width: 600px) {
+    .app {
+      height: auto;
+      min-height: calc(100vh - 52px);
+    }
+
+    .app > div {
+      overflow: visible;
+      height: auto;
+    }
+
+    .chart-area {
+      padding: 12px 12px 8px;
+    }
+
+    .chart-container {
+      height: 220px;
+      flex: none;
+    }
+
+    .franchise-name { font-size: 24px; }
+    .stat-pill-val { font-size: 17px; }
+    .stat-pills { gap: 8px; }
+
+    .control-bar { padding: 8px 12px; gap: 8px; }
+    .metric-btn { font-size: 11px; padding: 4px 8px; }
+
+    .report-card { grid-template-columns: repeat(2, 1fr); gap: 7px; }
+    .rc-grade { font-size: 30px; }
+    .rc-era-name { font-size: 9px; }
+    .rc-stat { font-size: 12px; }
+
+    .era-legend { gap: 10px; }
+    .era-item { font-size: 10px; }
+
+    .bottom-panel { padding: 0 12px 20px; gap: 0; }
+
+    .milestones-grid { grid-template-columns: 1fr; }
+
+    .timeline-row-label { font-size: 9px; width: 42px; }
+    .regime-bar-text { font-size: 10px; }
+
+    .rink-lines { display: none; }
   }
 </style>
 </head>
@@ -804,6 +924,12 @@
 
 <div class="app">
 
+  <!-- MOBILE TEAM PICKER (shown only on small screens) -->
+  <div class="mobile-team-bar" id="mobile-team-bar" style="grid-column:1/-1;">
+    <span class="mobile-team-label">Team</span>
+    <select class="mobile-team-select" id="mobile-team-select"></select>
+  </div>
+
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sidebar-header">
@@ -814,7 +940,7 @@
   </aside>
 
   <!-- MAIN CONTENT -->
-  <div style="display:flex;flex-direction:column;overflow:hidden;height:100%;">
+  <div class="main-col" style="display:flex;flex-direction:column;overflow:hidden;height:100%;">
     <div class="control-bar">
       <div class="control-group">
         <span class="control-label">Metric</span>
@@ -1097,17 +1223,25 @@ function getTeamData(team) {
 // ── SIDEBAR ────────────────────────────────────────────────────────────────────
 function buildSidebar() {
   const list = document.getElementById('team-list');
-  const divisions = [...new Set(TEAMS.map(t => t.division))];
+  const mobileSelect = document.getElementById('mobile-team-select');
   const divOrder = ['Atlantic', 'Metropolitan', 'Central', 'Pacific'];
 
   divOrder.forEach(div => {
     const teams = TEAMS.filter(t => t.division === div);
+
+    // Desktop sidebar
     const label = document.createElement('div');
     label.className = 'division-label';
     label.textContent = div + ' Division';
     list.appendChild(label);
 
+    // Mobile select optgroup
+    const optGroup = document.createElement('optgroup');
+    optGroup.label = div;
+    mobileSelect.appendChild(optGroup);
+
     teams.forEach(team => {
+      // Desktop item
       const item = document.createElement('div');
       item.className = 'team-item' + (team.id === selectedTeam.id ? ' active' : '');
       item.dataset.id = team.id;
@@ -1121,6 +1255,13 @@ function buildSidebar() {
       `;
       item.addEventListener('click', () => selectTeam(team));
       list.appendChild(item);
+
+      // Mobile option
+      const opt = document.createElement('option');
+      opt.value = team.id;
+      opt.textContent = team.name + (team.allCups > 0 ? ` 🏆×${team.allCups}` : '');
+      if (team.id === selectedTeam.id) opt.selected = true;
+      optGroup.appendChild(opt);
     });
   });
 
@@ -1132,6 +1273,11 @@ function buildSidebar() {
       el.style.display = (name.includes(q) || city.includes(q)) ? '' : 'none';
     });
   });
+
+  mobileSelect.addEventListener('change', e => {
+    const team = TEAMS.find(t => t.id === e.target.value);
+    if (team) selectTeam(team);
+  });
 }
 
 function selectTeam(team) {
@@ -1139,6 +1285,8 @@ function selectTeam(team) {
   document.querySelectorAll('.team-item').forEach(el => {
     el.classList.toggle('active', el.dataset.id === team.id);
   });
+  const mobileSelect = document.getElementById('mobile-team-select');
+  if (mobileSelect) mobileSelect.value = team.id;
   updateChart();
 }
 
